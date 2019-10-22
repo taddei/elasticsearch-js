@@ -4,10 +4,10 @@
 
 'use strict'
 
-const { test } = require('tap')
-const { URL } = require('url')
-const { buildCluster } = require('../utils')
-const { Client, Connection, Transport, events, errors } = require('../../index')
+import { test } from 'tap'
+import { URL } from 'url'
+import { buildCluster } from '../utils'
+import { Client, Connection, Transport, events, errors } from '../../src'
 
 /**
  * The aim of this test is to verify how the sniffer behaves
@@ -22,7 +22,7 @@ const { Client, Connection, Transport, events, errors } = require('../../index')
 test('Should update the connection pool', t => {
   t.plan(10)
 
-  buildCluster(({ nodes, shutdown }) => {
+  buildCluster({}, ({ nodes, shutdown }) => {
     const client = new Client({
       node: nodes[Object.keys(nodes)[0]].url
     })
@@ -114,7 +114,7 @@ test('Should handle hostnames in publish_address', t => {
 test('Sniff interval', t => {
   t.plan(10)
 
-  buildCluster(({ nodes, shutdown, kill }) => {
+  buildCluster({}, ({ nodes, shutdown, kill }) => {
     const client = new Client({
       node: nodes[Object.keys(nodes)[0]].url,
       sniffInterval: 50
@@ -151,7 +151,7 @@ test('Sniff interval', t => {
 test('Sniff on start', t => {
   t.plan(4)
 
-  buildCluster(({ nodes, shutdown, kill }) => {
+  buildCluster({}, ({ nodes, shutdown, kill }) => {
     const client = new Client({
       node: nodes[Object.keys(nodes)[0]].url,
       sniffOnStart: true
@@ -175,7 +175,7 @@ test('Sniff on start', t => {
 test('Should not close living connections', t => {
   t.plan(3)
 
-  buildCluster(({ nodes, shutdown, kill }) => {
+  buildCluster({}, ({ nodes, shutdown, kill }) => {
     class MyConnection extends Connection {
       close () {
         t.fail('Should not be called')
@@ -206,7 +206,7 @@ test('Should not close living connections', t => {
 test('Sniff on connection fault', t => {
   t.plan(5)
 
-  buildCluster(({ nodes, shutdown, kill }) => {
+  buildCluster({}, ({ nodes, shutdown, kill }) => {
     class MyConnection extends Connection {
       request (params, callback) {
         if (this.id === 'http://localhost:9200/') {

@@ -4,11 +4,11 @@
 
 'use strict'
 
-const { Client, errors } = require('../../index')
-const { buildServer } = require('../utils')
+import { Client, errors } from '../../src'
+import { buildServer } from '../utils'
 
 function runAsyncTest (test) {
-  test('async await (search)', t => {
+  test('async await (search)', (t: any) => {
     t.plan(1)
 
     function handler (req, res) {
@@ -24,7 +24,6 @@ function runAsyncTest (test) {
       try {
         const { body } = await client.search({
           index: 'test',
-          type: 'doc',
           q: 'foo:bar'
         })
         t.deepEqual(body, { hello: 'world' })
@@ -35,7 +34,7 @@ function runAsyncTest (test) {
     })
   })
 
-  test('async await (index)', t => {
+  test('async await (index)', (t: any) => {
     t.plan(1)
 
     function handler (req, res) {
@@ -61,7 +60,7 @@ function runAsyncTest (test) {
     })
   })
 
-  test('async await (ConfigurationError)', async t => {
+  test('async await (ConfigurationError)', async (t: any) => {
     t.plan(1)
 
     const client = new Client({
@@ -69,7 +68,7 @@ function runAsyncTest (test) {
     })
 
     try {
-      await client.index({ body: { foo: 'bar' } })
+      await client.index({ index: 'test', body: { foo: 'bar' } })
       t.fail('Should throw')
     } catch (err) {
       t.ok(err instanceof errors.ConfigurationError)

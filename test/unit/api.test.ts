@@ -4,11 +4,11 @@
 
 'use strict'
 
-const { test } = require('tap')
-const { Client, errors } = require('../../index')
-const { buildServer } = require('../utils')
+import { test } from 'tap'
+import { Client, errors } from '../../src'
+import { buildServer } from '../utils'
 
-test('Basic (callback)', t => {
+test('Basic (callback)', (t: any) => {
   t.plan(2)
 
   function handler (req, res) {
@@ -32,7 +32,7 @@ test('Basic (callback)', t => {
   })
 })
 
-test('Basic (promises)', t => {
+test('Basic (promises)', (t: any) => {
   t.plan(1)
 
   function handler (req, res) {
@@ -58,7 +58,7 @@ test('Basic (promises)', t => {
   })
 })
 
-test('Error (callback)', t => {
+test('Error (callback)', (t: any) => {
   t.plan(1)
 
   function handler (req, res) {
@@ -82,7 +82,7 @@ test('Error (callback)', t => {
   })
 })
 
-test('Error (promises)', t => {
+test('Error (promises)', (t: any) => {
   t.plan(1)
 
   function handler (req, res) {
@@ -109,7 +109,7 @@ test('Error (promises)', t => {
   })
 })
 
-test('Abort method (callback)', t => {
+test('Abort method (callback)', (t: any) => {
   t.plan(3)
 
   function handler (req, res) {
@@ -135,7 +135,7 @@ test('Abort method (callback)', t => {
   })
 })
 
-test('Abort is not supported in promises', t => {
+test('Abort is not supported in promises', (t: any) => {
   t.plan(2)
 
   function handler (req, res) {
@@ -160,11 +160,12 @@ test('Abort is not supported in promises', t => {
       })
       .catch(t.fail)
 
+    // @ts-ignore
     t.type(request.abort, 'undefined')
   })
 })
 
-test('Basic (options and callback)', t => {
+test('Basic (options and callback)', (t: any) => {
   t.plan(2)
 
   function handler (req, res) {
@@ -190,7 +191,7 @@ test('Basic (options and callback)', t => {
   })
 })
 
-test('Basic (options and promises)', t => {
+test('Basic (options and promises)', (t: any) => {
   t.plan(1)
 
   function handler (req, res) {
@@ -218,7 +219,7 @@ test('Basic (options and promises)', t => {
   })
 })
 
-test('Pass unknown parameters as query parameters (and get a warning)', t => {
+test('Pass unknown parameters as query parameters (and get a warning)', (t: any) => {
   t.plan(4)
 
   function handler (req, res) {
@@ -235,6 +236,7 @@ test('Pass unknown parameters as query parameters (and get a warning)', t => {
     client.search({
       index: 'test',
       q: 'foo:bar',
+      // @ts-ignore
       winter: 'is coming'
     }, (err, { body, warnings }) => {
       t.error(err)
@@ -245,7 +247,7 @@ test('Pass unknown parameters as query parameters (and get a warning)', t => {
   })
 })
 
-test('If the API uses the same key for both url and query parameter, the url should win', t => {
+test('If the API uses the same key for both url and query parameter, the url should win', (t: any) => {
   t.plan(2)
 
   function handler (req, res) {
@@ -270,13 +272,14 @@ test('If the API uses the same key for both url and query parameter, the url sho
   })
 })
 
-test('ConfigurationError (callback)', t => {
+test('ConfigurationError (callback)', (t: any) => {
   t.plan(1)
 
   const client = new Client({
     node: 'http://localhost:9200'
   })
 
+  // @ts-ignore
   client.index({
     body: { foo: 'bar' }
   }, (err, { body }) => {
@@ -284,7 +287,7 @@ test('ConfigurationError (callback)', t => {
   })
 })
 
-test('ConfigurationError (promises)', t => {
+test('ConfigurationError (promises)', (t: any) => {
   t.plan(1)
 
   const client = new Client({
@@ -292,6 +295,7 @@ test('ConfigurationError (promises)', t => {
   })
 
   client
+    // @ts-ignore
     .index({ body: { foo: 'bar' } })
     .then(t.fail)
     .catch(err => {

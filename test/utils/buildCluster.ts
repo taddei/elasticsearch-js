@@ -4,9 +4,11 @@
 
 'use strict'
 
-const debug = require('debug')('elasticsearch-test')
-const workq = require('workq')
-const buildServer = require('./buildServer')
+import Debug from 'debug'
+import workq from 'workq'
+import buildServer from './buildServer'
+
+const debug = Debug('elasticsearch-test')
 
 var id = 0
 function buildCluster (options, callback) {
@@ -89,4 +91,4 @@ function buildCluster (options, callback) {
   })
 }
 
-module.exports = buildCluster
+export default buildCluster

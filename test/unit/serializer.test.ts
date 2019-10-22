@@ -4,12 +4,12 @@
 
 'use strict'
 
-const { test } = require('tap')
-const { stringify } = require('querystring')
-const Serializer = require('../../lib/Serializer')
-const { SerializationError, DeserializationError } = require('../../lib/errors')
+import { test } from 'tap'
+import { stringify } from 'querystring'
+import Serializer from '../../src/Serializer'
+import { SerializationError, DeserializationError } from '../../src/errors'
 
-test('Basic', t => {
+test('Basic', (t: any) => {
   t.plan(2)
   const s = new Serializer()
   const obj = { hello: 'world' }
@@ -18,7 +18,7 @@ test('Basic', t => {
   t.deepEqual(s.deserialize(json), obj)
 })
 
-test('ndserialize', t => {
+test('ndserialize', (t: any) => {
   t.plan(1)
   const s = new Serializer()
   const obj = [
@@ -34,7 +34,7 @@ test('ndserialize', t => {
   )
 })
 
-test('ndserialize (strings)', t => {
+test('ndserialize (strings)', (t: any) => {
   t.plan(1)
   const s = new Serializer()
   const obj = [
@@ -50,7 +50,7 @@ test('ndserialize (strings)', t => {
   )
 })
 
-test('qserialize', t => {
+test('qserialize', (t: any) => {
   t.plan(1)
   const s = new Serializer()
   const obj = {
@@ -64,7 +64,7 @@ test('qserialize', t => {
   )
 })
 
-test('qserialize (array)', t => {
+test('qserialize (array)', (t: any) => {
   t.plan(1)
   const s = new Serializer()
   const obj = {
@@ -78,7 +78,7 @@ test('qserialize (array)', t => {
   )
 })
 
-test('qserialize (string)', t => {
+test('qserialize (string)', (t: any) => {
   t.plan(1)
   const s = new Serializer()
   const obj = {
@@ -92,7 +92,7 @@ test('qserialize (string)', t => {
   )
 })
 
-test('qserialize (key with undefined value)', t => {
+test('qserialize (key with undefined value)', (t: any) => {
   t.plan(1)
   const s = new Serializer()
   const obj = {
@@ -107,10 +107,11 @@ test('qserialize (key with undefined value)', t => {
   )
 })
 
-test('SerializationError', t => {
+test('SerializationError', (t: any) => {
   t.plan(1)
   const s = new Serializer()
   const obj = { hello: 'world' }
+  // @ts-ignore
   obj.o = obj
   try {
     s.serialize(obj)
@@ -120,7 +121,7 @@ test('SerializationError', t => {
   }
 })
 
-test('SerializationError ndserialize', t => {
+test('SerializationError ndserialize', (t: any) => {
   t.plan(1)
   const s = new Serializer()
   try {
@@ -131,7 +132,7 @@ test('SerializationError ndserialize', t => {
   }
 })
 
-test('DeserializationError', t => {
+test('DeserializationError', (t: any) => {
   t.plan(1)
   const s = new Serializer()
   const json = '{"hello'

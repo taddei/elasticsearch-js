@@ -4,10 +4,13 @@
 
 'use strict'
 
-const debug = require('debug')('elasticsearch-test')
-const stoppable = require('stoppable')
+import Debug from 'debug'
+import stoppable from 'stoppable'
+
+const debug = Debug('elas-test')
 
 // allow self signed certificates for testing purposes
+// @ts-ignore
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0
 
 const { readFileSync } = require('fs')
@@ -21,7 +24,9 @@ const secureOpts = {
 }
 
 var id = 0
-function buildServer (handler, opts, cb) {
+function buildServer (handler, cb)
+function buildServer (handler, opts, cb)
+function buildServer (handler, opts?, cb?) {
   const serverId = id++
   debug(`Booting server '${serverId}'`)
   if (cb == null) {
@@ -45,4 +50,4 @@ function buildServer (handler, opts, cb) {
   })
 }
 
-module.exports = buildServer
+export default buildServer

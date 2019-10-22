@@ -4,10 +4,11 @@
 
 'use strict'
 
-const { test } = require('tap')
-const { roundRobinSelector, randomSelector } = require('../../lib/Transport').internals
+import { test } from 'tap'
+import { internals } from '../../src/Transport'
+const { randomSelector, roundRobinSelector } = internals
 
-test('RoundRobinSelector', t => {
+test('RoundRobinSelector', (t: any) => {
   const selector = roundRobinSelector()
   const arr = [0, 1, 2, 3, 4, 5]
 
@@ -20,7 +21,7 @@ test('RoundRobinSelector', t => {
   }
 })
 
-test('RandomSelector', t => {
+test('RandomSelector', (t: any) => {
   t.plan(1)
   const arr = [0, 1, 2, 3, 4, 5]
   t.type(randomSelector(arr), 'number')

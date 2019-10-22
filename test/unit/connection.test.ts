@@ -4,17 +4,17 @@
 
 'use strict'
 
-const { test } = require('tap')
-const { inspect } = require('util')
-const { createGzip, createDeflate } = require('zlib')
-const { URL } = require('url')
-const { Agent } = require('http')
-const intoStream = require('into-stream')
-const { buildServer } = require('../utils')
-const Connection = require('../../lib/Connection')
-const { TimeoutError, ConfigurationError } = require('../../lib/errors')
+import { test } from 'tap'
+import { URL } from 'url'
+import { inspect } from 'util'
+import { createGzip, createDeflate } from 'zlib'
+import { Agent } from 'http'
+import intoStream from 'into-stream'
+import { buildServer } from '../utils'
+import Connection from '../../src/Connection'
+import { TimeoutError, ConfigurationError } from  '../../src/errors'
 
-test('Basic (http)', t => {
+test('Basic (http)', (t: any) => {
   t.plan(4)
 
   function handler (req, res) {
@@ -33,7 +33,7 @@ test('Basic (http)', t => {
       path: '/hello',
       method: 'GET',
       headers: {
-        'X-Custom-Test': true
+        'X-Custom-Test': 'true'
       }
     }, (err, res) => {
       t.error(err)
@@ -54,7 +54,7 @@ test('Basic (http)', t => {
   })
 })
 
-test('Basic (https)', t => {
+test('Basic (https)', (t: any) => {
   t.plan(4)
 
   function handler (req, res) {
@@ -73,7 +73,7 @@ test('Basic (https)', t => {
       path: '/hello',
       method: 'GET',
       headers: {
-        'X-Custom-Test': true
+        'X-Custom-Test': 'true'
       }
     }, (err, res) => {
       t.error(err)
@@ -94,7 +94,7 @@ test('Basic (https)', t => {
   })
 })
 
-test('Basic (https with ssl agent)', t => {
+test('Basic (https with ssl agent)', (t: any) => {
   t.plan(4)
 
   function handler (req, res) {
@@ -114,7 +114,7 @@ test('Basic (https with ssl agent)', t => {
       path: '/hello',
       method: 'GET',
       headers: {
-        'X-Custom-Test': true
+        'X-Custom-Test': 'true'
       }
     }, (err, res) => {
       t.error(err)
@@ -135,7 +135,7 @@ test('Basic (https with ssl agent)', t => {
   })
 })
 
-test('Custom http agent', t => {
+test('Custom http agent', (t: any) => {
   t.plan(5)
 
   function handler (req, res) {
@@ -153,17 +153,19 @@ test('Custom http agent', t => {
       maxSockets: 256,
       maxFreeSockets: 256
     })
+    // @ts-ignore
     agent.custom = true
     const connection = new Connection({
       url: new URL(`http://localhost:${port}`),
       agent: () => agent
     })
+    // @ts-ignore
     t.true(connection.agent.custom)
     connection.request({
       path: '/hello',
       method: 'GET',
       headers: {
-        'X-Custom-Test': true
+        'X-Custom-Test': 'true'
       }
     }, (err, res) => {
       t.error(err)
@@ -184,7 +186,7 @@ test('Custom http agent', t => {
   })
 })
 
-test('Disable keep alive', t => {
+test('Disable keep alive', (t: any) => {
   t.plan(3)
 
   function handler (req, res) {
@@ -204,7 +206,7 @@ test('Disable keep alive', t => {
       path: '/hello',
       method: 'GET',
       headers: {
-        'X-Custom-Test': true
+        'X-Custom-Test': 'true'
       }
     }, (err, res) => {
       t.error(err)
@@ -217,7 +219,7 @@ test('Disable keep alive', t => {
   })
 })
 
-test('Timeout support', t => {
+test('Timeout support', (t: any) => {
   t.plan(1)
 
   function handler (req, res) {
@@ -242,8 +244,8 @@ test('Timeout support', t => {
   })
 })
 
-test('querystring', t => {
-  t.test('Should concatenate the querystring', t => {
+test('querystring', (t: any) => {
+  t.test('Should concatenate the querystring', (t: any) => {
     t.plan(2)
 
     function handler (req, res) {
@@ -266,7 +268,7 @@ test('querystring', t => {
     })
   })
 
-  t.test('If the querystring is null should not do anything', t => {
+  t.test('If the querystring is null should not do anything', (t: any) => {
     t.plan(2)
 
     function handler (req, res) {
@@ -292,7 +294,7 @@ test('querystring', t => {
   t.end()
 })
 
-test('Body request', t => {
+test('Body request', (t: any) => {
   t.plan(2)
 
   function handler (req, res) {
@@ -321,7 +323,7 @@ test('Body request', t => {
   })
 })
 
-test('Send body as buffer', t => {
+test('Send body as buffer', (t: any) => {
   t.plan(2)
 
   function handler (req, res) {
@@ -350,7 +352,7 @@ test('Send body as buffer', t => {
   })
 })
 
-test('Send body as stream', t => {
+test('Send body as stream', (t: any) => {
   t.plan(2)
 
   function handler (req, res) {
@@ -379,8 +381,8 @@ test('Send body as stream', t => {
   })
 })
 
-test('Should handle compression', t => {
-  t.test('gzip', t => {
+test('Should handle compression', (t: any) => {
+  t.test('gzip', (t: any) => {
     t.plan(3)
 
     function handler (req, res) {
@@ -420,7 +422,7 @@ test('Should handle compression', t => {
     })
   })
 
-  t.test('deflate', t => {
+  t.test('deflate', (t: any) => {
     t.plan(3)
 
     function handler (req, res) {
@@ -463,7 +465,7 @@ test('Should handle compression', t => {
   t.end()
 })
 
-test('Should not close a connection if there are open requests', t => {
+test('Should not close a connection if there are open requests', (t: any) => {
   t.plan(4)
 
   function handler (req, res) {
@@ -499,7 +501,7 @@ test('Should not close a connection if there are open requests', t => {
   })
 })
 
-test('Url with auth', t => {
+test('Url with auth', (t: any) => {
   t.plan(2)
 
   function handler (req, res) {
@@ -524,7 +526,7 @@ test('Url with auth', t => {
   })
 })
 
-test('Url with querystring', t => {
+test('Url with querystring', (t: any) => {
   t.plan(2)
 
   function handler (req, res) {
@@ -547,7 +549,7 @@ test('Url with querystring', t => {
   })
 })
 
-test('Custom headers for connection', t => {
+test('Custom headers for connection', (t: any) => {
   t.plan(3)
 
   function handler (req, res) {
@@ -567,7 +569,7 @@ test('Custom headers for connection', t => {
       path: '/hello',
       method: 'GET',
       headers: {
-        'X-Custom-Test': true
+        'X-Custom-Test': 'true'
       }
     }, (err, res) => {
       t.error(err)
@@ -579,7 +581,7 @@ test('Custom headers for connection', t => {
 })
 
 // TODO: add a check that the response is not decompressed
-test('asStream set to true', t => {
+test('asStream set to true', (t: any) => {
   t.plan(2)
 
   function handler (req, res) {
@@ -609,7 +611,7 @@ test('asStream set to true', t => {
   })
 })
 
-test('Connection id should not contain credentials', t => {
+test('Connection id should not contain credentials', (t: any) => {
   const connection = new Connection({
     url: new URL('http://user:password@localhost:9200')
   })
@@ -617,7 +619,7 @@ test('Connection id should not contain credentials', t => {
   t.end()
 })
 
-test('Should throw if the protocol is not http or https', t => {
+test('Should throw if the protocol is not http or https', (t: any) => {
   try {
     new Connection({ // eslint-disable-line
       url: new URL('nope://nope')
@@ -631,7 +633,7 @@ test('Should throw if the protocol is not http or https', t => {
 })
 
 // https://github.com/nodejs/node/commit/b961d9fd83
-test('Should disallow two-byte characters in URL path', t => {
+test('Should disallow two-byte characters in URL path', (t: any) => {
   t.plan(1)
 
   const connection = new Connection({
@@ -648,8 +650,8 @@ test('Should disallow two-byte characters in URL path', t => {
   })
 })
 
-test('setRole', t => {
-  t.test('Update the value of a role', t => {
+test('setRole', (t: any) => {
+  t.test('Update the value of a role', (t: any) => {
     t.plan(2)
 
     const connection = new Connection({
@@ -673,7 +675,7 @@ test('setRole', t => {
     })
   })
 
-  t.test('Invalid role', t => {
+  t.test('Invalid role', (t: any) => {
     t.plan(2)
 
     const connection = new Connection({
@@ -689,7 +691,7 @@ test('setRole', t => {
     }
   })
 
-  t.test('Invalid value', t => {
+  t.test('Invalid value', (t: any) => {
     t.plan(2)
 
     const connection = new Connection({
@@ -708,7 +710,7 @@ test('setRole', t => {
   t.end()
 })
 
-test('Util.inspect Connection class should hide agent, ssl and auth', t => {
+test('Util.inspect Connection class should hide agent, ssl and auth', (t: any) => {
   t.plan(1)
 
   const connection = new Connection({
@@ -737,7 +739,7 @@ test('Util.inspect Connection class should hide agent, ssl and auth', t => {
   )
 })
 
-test('connection.toJSON should hide agent, ssl and auth', t => {
+test('connection.toJSON should hide agent, ssl and auth', (t: any) => {
   t.plan(1)
 
   const connection = new Connection({
@@ -766,8 +768,8 @@ test('connection.toJSON should hide agent, ssl and auth', t => {
 })
 
 // https://github.com/elastic/elasticsearch-js/issues/843
-test('Port handling', t => {
-  t.test('http 80', t => {
+test('Port handling', (t: any) => {
+  t.test('http 80', (t: any) => {
     const connection = new Connection({
       url: new URL('http://localhost:80')
     })
@@ -780,7 +782,7 @@ test('Port handling', t => {
     t.end()
   })
 
-  t.test('https 443', t => {
+  t.test('https 443', (t: any) => {
     const connection = new Connection({
       url: new URL('https://localhost:443')
     })
@@ -796,8 +798,8 @@ test('Port handling', t => {
   t.end()
 })
 
-test('Authorization header', t => {
-  t.test('None', t => {
+test('Authorization header', (t: any) => {
+  t.test('None', (t: any) => {
     const connection = new Connection({
       url: new URL('http://localhost:9200')
     })
@@ -807,7 +809,7 @@ test('Authorization header', t => {
     t.end()
   })
 
-  t.test('Basic', t => {
+  t.test('Basic', (t: any) => {
     const connection = new Connection({
       url: new URL('http://localhost:9200'),
       auth: { username: 'foo', password: 'bar' }
@@ -818,7 +820,7 @@ test('Authorization header', t => {
     t.end()
   })
 
-  t.test('ApiKey (string)', t => {
+  t.test('ApiKey (string)', (t: any) => {
     const connection = new Connection({
       url: new URL('http://localhost:9200'),
       auth: { apiKey: 'Zm9vOmJhcg==' }
@@ -829,7 +831,7 @@ test('Authorization header', t => {
     t.end()
   })
 
-  t.test('ApiKey (object)', t => {
+  t.test('ApiKey (object)', (t: any) => {
     const connection = new Connection({
       url: new URL('http://localhost:9200'),
       auth: { apiKey: { id: 'foo', api_key: 'bar' } }
@@ -843,7 +845,7 @@ test('Authorization header', t => {
   t.end()
 })
 
-test('Should not add agent and ssl to the serialized connection', t => {
+test('Should not add agent and ssl to the serialized connection', (t: any) => {
   const connection = new Connection({
     url: new URL('http://localhost:9200')
   })

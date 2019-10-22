@@ -1,23 +1,24 @@
 'use strict'
 
-const { test } = require('tap')
-const lolex = require('lolex')
-const { Client, Transport } = require('../../index')
-const {
-  connection: { MockConnection, MockConnectionSniff }
-} = require('../utils')
+import { test } from 'tap'
+import lolex from 'lolex'
+import { Client } from '../../src'
+import { internals } from '../../src/Transport'
+import { connection } from '../utils'
+
+const { MockConnection, MockConnectionSniff } = connection
 const noop = () => {}
 
 test('Request id', t => {
   t.test('Default generateRequestId', t => {
-    const { generateRequestId } = Transport.internals
+    const { generateRequestId } = internals
     t.type(generateRequestId, 'function')
 
     const genReqId = generateRequestId()
     t.type(genReqId, 'function')
 
     for (var i = 1; i <= 10; i++) {
-      t.strictEqual(genReqId(), i)
+      t.strictEqual(genReqId({}, {}), i)
     }
 
     t.end()

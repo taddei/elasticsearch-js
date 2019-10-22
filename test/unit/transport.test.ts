@@ -4,17 +4,14 @@
 
 'use strict'
 
-const { test } = require('tap')
-const { URL } = require('url')
-const lolex = require('lolex')
-const { createGunzip } = require('zlib')
-const os = require('os')
-const intoStream = require('into-stream')
-const {
-  buildServer,
-  connection: { MockConnection, MockConnectionTimeout, MockConnectionError }
-} = require('../utils')
-const {
+import { test } from 'tap'
+import { URL } from 'url'
+import lolex from 'lolex'
+import { createGunzip } from 'zlib'
+import os from 'os'
+import intoStream from 'into-stream'
+import { buildServer, connection } from '../utils'
+import {
   NoLivingConnectionsError,
   SerializationError,
   DeserializationError,
@@ -22,14 +19,15 @@ const {
   ResponseError,
   ConnectionError,
   ConfigurationError
-} = require('../../lib/errors')
+} from '../../src/errors'
+import { ConnectionPool } from '../../src/pool'
+import Connection from '../../src/Connection'
+import Serializer from '../../src/Serializer'
+import Transport from '../../src/Transport'
 
-const ConnectionPool = require('../../lib/pool/ConnectionPool')
-const Connection = require('../../lib/Connection')
-const Serializer = require('../../lib/Serializer')
-const Transport = require('../../lib/Transport')
+const { MockConnection, MockConnectionTimeout, MockConnectionError } = connection
 
-test('Basic', t => {
+test('Basic', (t: any) => {
   t.plan(2)
   function handler (req, res) {
     res.setHeader('Content-Type', 'application/json;utf=8')
@@ -41,13 +39,17 @@ test('Basic', t => {
     pool.addConnection(`http://localhost:${port}`)
 
     const transport = new Transport({
-      emit: () => {},
+      emit: () => true,
       connectionPool: pool,
       serializer: new Serializer(),
       maxRetries: 3,
       requestTimeout: 30000,
       sniffInterval: false,
-      sniffOnStart: false
+      sniffOnStart: false,
+      name: 'elasticsearch-js',
+      suggestCompression: false,
+      sniffOnConnectionFault: false,
+      sniffEndpoint: '_nodes/_all/http'
     })
 
     transport.request({
@@ -61,20 +63,24 @@ test('Basic', t => {
   })
 })
 
-test('Basic (promises support)', t => {
+test('Basic (promises support)', (t: any) => {
   t.plan(1)
 
   const pool = new ConnectionPool({ Connection: MockConnection })
   pool.addConnection('http://localhost:9200')
 
   const transport = new Transport({
-    emit: () => {},
+    emit: () => true,
     connectionPool: pool,
     serializer: new Serializer(),
     maxRetries: 3,
     requestTimeout: 30000,
     sniffInterval: false,
-    sniffOnStart: false
+    sniffOnStart: false,
+    name: 'elasticsearch-js',
+    suggestCompression: false,
+    sniffOnConnectionFault: false,
+    sniffEndpoint: '_nodes/_all/http'
   })
 
   transport
@@ -88,20 +94,24 @@ test('Basic (promises support)', t => {
     .catch(t.fail)
 })
 
-test('Basic (options + promises support)', t => {
+test('Basic (options + promises support)', (t: any) => {
   t.plan(1)
 
   const pool = new ConnectionPool({ Connection: MockConnection })
   pool.addConnection('http://localhost:9200')
 
   const transport = new Transport({
-    emit: () => {},
+    emit: () => true,
     connectionPool: pool,
     serializer: new Serializer(),
     maxRetries: 3,
     requestTimeout: 30000,
     sniffInterval: false,
-    sniffOnStart: false
+    sniffOnStart: false,
+    name: 'elasticsearch-js',
+    suggestCompression: false,
+    sniffOnConnectionFault: false,
+    sniffEndpoint: '_nodes/_all/http'
   })
 
   transport
@@ -117,7 +127,7 @@ test('Basic (options + promises support)', t => {
     .catch(t.fail)
 })
 
-test('Send POST', t => {
+test('Send POST', (t: any) => {
   t.plan(4)
   function handler (req, res) {
     t.match(req.headers, {
@@ -140,13 +150,17 @@ test('Send POST', t => {
     pool.addConnection(`http://localhost:${port}`)
 
     const transport = new Transport({
-      emit: () => {},
+      emit: () => true,
       connectionPool: pool,
       serializer: new Serializer(),
       maxRetries: 3,
       requestTimeout: 30000,
       sniffInterval: false,
-      sniffOnStart: false
+      sniffOnStart: false,
+      name: 'elasticsearch-js',
+      suggestCompression: false,
+      sniffOnConnectionFault: false,
+      sniffEndpoint: '_nodes/_all/http'
     })
 
     transport.request({
@@ -161,7 +175,7 @@ test('Send POST', t => {
   })
 })
 
-test('Send POST (ndjson)', t => {
+test('Send POST (ndjson)', (t: any) => {
   t.plan(4)
 
   const bulkBody = [
@@ -196,13 +210,17 @@ test('Send POST (ndjson)', t => {
     pool.addConnection(`http://localhost:${port}`)
 
     const transport = new Transport({
-      emit: () => {},
+      emit: () => true,
       connectionPool: pool,
       serializer: new Serializer(),
       maxRetries: 3,
       requestTimeout: 30000,
       sniffInterval: false,
-      sniffOnStart: false
+      sniffOnStart: false,
+      name: 'elasticsearch-js',
+      suggestCompression: false,
+      sniffOnConnectionFault: false,
+      sniffEndpoint: '_nodes/_all/http'
     })
 
     transport.request({
@@ -217,7 +235,7 @@ test('Send POST (ndjson)', t => {
   })
 })
 
-test('Send stream', t => {
+test('Send stream', (t: any) => {
   t.plan(4)
   function handler (req, res) {
     t.match(req.headers, {
@@ -239,13 +257,17 @@ test('Send stream', t => {
     pool.addConnection(`http://localhost:${port}`)
 
     const transport = new Transport({
-      emit: () => {},
+      emit: () => true,
       connectionPool: pool,
       serializer: new Serializer(),
       maxRetries: 3,
       requestTimeout: 30000,
       sniffInterval: false,
-      sniffOnStart: false
+      sniffOnStart: false,
+      name: 'elasticsearch-js',
+      suggestCompression: false,
+      sniffOnConnectionFault: false,
+      sniffEndpoint: '_nodes/_all/http'
     })
 
     transport.request({
@@ -260,7 +282,7 @@ test('Send stream', t => {
   })
 })
 
-test('Send stream (bulkBody)', t => {
+test('Send stream (bulkBody)', (t: any) => {
   t.plan(4)
   function handler (req, res) {
     t.match(req.headers, {
@@ -282,13 +304,17 @@ test('Send stream (bulkBody)', t => {
     pool.addConnection(`http://localhost:${port}`)
 
     const transport = new Transport({
-      emit: () => {},
+      emit: () => true,
       connectionPool: pool,
       serializer: new Serializer(),
       maxRetries: 3,
       requestTimeout: 30000,
       sniffInterval: false,
-      sniffOnStart: false
+      sniffOnStart: false,
+      name: 'elasticsearch-js',
+      suggestCompression: false,
+      sniffOnConnectionFault: false,
+      sniffEndpoint: '_nodes/_all/http'
     })
 
     transport.request({
@@ -303,7 +329,7 @@ test('Send stream (bulkBody)', t => {
   })
 })
 
-test('Not JSON payload from server', t => {
+test('Not JSON payload from server', (t: any) => {
   t.plan(2)
   function handler (req, res) {
     res.setHeader('Content-Type', 'text/plain')
@@ -315,13 +341,17 @@ test('Not JSON payload from server', t => {
     pool.addConnection(`http://localhost:${port}`)
 
     const transport = new Transport({
-      emit: () => {},
+      emit: () => true,
       connectionPool: pool,
       serializer: new Serializer(),
       maxRetries: 3,
       requestTimeout: 30000,
       sniffInterval: false,
-      sniffOnStart: false
+      sniffOnStart: false,
+      name: 'elasticsearch-js',
+      suggestCompression: false,
+      sniffOnConnectionFault: false,
+      sniffEndpoint: '_nodes/_all/http'
     })
 
     transport.request({
@@ -335,18 +365,22 @@ test('Not JSON payload from server', t => {
   })
 })
 
-test('NoLivingConnectionsError', t => {
+test('NoLivingConnectionsError', (t: any) => {
   t.plan(1)
   const pool = new ConnectionPool({ Connection })
 
   const transport = new Transport({
-    emit: () => {},
+    emit: () => true,
     connectionPool: pool,
     serializer: new Serializer(),
     maxRetries: 3,
     requestTimeout: 30000,
     sniffInterval: false,
-    sniffOnStart: false
+    sniffOnStart: false,
+    name: 'elasticsearch-js',
+    suggestCompression: false,
+    sniffOnConnectionFault: false,
+    sniffEndpoint: '_nodes/_all/http'
   })
 
   transport.request({
@@ -357,22 +391,27 @@ test('NoLivingConnectionsError', t => {
   })
 })
 
-test('SerializationError', t => {
+test('SerializationError', (t: any) => {
   t.plan(1)
   const pool = new ConnectionPool({ Connection })
   pool.addConnection('http://localhost:9200')
 
   const transport = new Transport({
-    emit: () => {},
+    emit: () => true,
     connectionPool: pool,
     serializer: new Serializer(),
     maxRetries: 3,
     requestTimeout: 30000,
     sniffInterval: false,
-    sniffOnStart: false
+    sniffOnStart: false,
+    name: 'elasticsearch-js',
+    suggestCompression: false,
+    sniffOnConnectionFault: false,
+    sniffEndpoint: '_nodes/_all/http'
   })
 
   const body = { hello: 'world' }
+  // @ts-ignore
   body.o = body
   transport.request({
     method: 'POST',
@@ -383,22 +422,27 @@ test('SerializationError', t => {
   })
 })
 
-test('SerializationError (bulk)', t => {
+test('SerializationError (bulk)', (t: any) => {
   t.plan(1)
   const pool = new ConnectionPool({ Connection })
   pool.addConnection('http://localhost:9200')
 
   const transport = new Transport({
-    emit: () => {},
+    emit: () => true,
     connectionPool: pool,
     serializer: new Serializer(),
     maxRetries: 3,
     requestTimeout: 30000,
     sniffInterval: false,
-    sniffOnStart: false
+    sniffOnStart: false,
+    name: 'elasticsearch-js',
+    suggestCompression: false,
+    sniffOnConnectionFault: false,
+    sniffEndpoint: '_nodes/_all/http'
   })
 
-  const bulkBody = { hello: 'world' }
+  const bulkBody = [{ hello: 'world' }]
+  // @ts-ignore
   bulkBody.o = bulkBody
   transport.request({
     method: 'POST',
@@ -409,7 +453,7 @@ test('SerializationError (bulk)', t => {
   })
 })
 
-test('DeserializationError', t => {
+test('DeserializationError', (t: any) => {
   t.plan(1)
   function handler (req, res) {
     res.setHeader('Content-Type', 'application/json;utf=8')
@@ -421,13 +465,17 @@ test('DeserializationError', t => {
     pool.addConnection(`http://localhost:${port}`)
 
     const transport = new Transport({
-      emit: () => {},
+      emit: () => true,
       connectionPool: pool,
       serializer: new Serializer(),
       maxRetries: 3,
       requestTimeout: 30000,
       sniffInterval: false,
-      sniffOnStart: false
+      sniffOnStart: false,
+      name: 'elasticsearch-js',
+      suggestCompression: false,
+      sniffOnConnectionFault: false,
+      sniffEndpoint: '_nodes/_all/http'
     })
 
     transport.request({
@@ -440,13 +488,13 @@ test('DeserializationError', t => {
   })
 })
 
-test('TimeoutError (should call markDead on the failing connection)', t => {
+test('TimeoutError (should call markDead on the failing connection)', (t: any) => {
   t.plan(2)
 
   class CustomConnectionPool extends ConnectionPool {
     markDead (connection) {
       t.strictEqual(connection.id, 'node1')
-      super.markDead(connection)
+      return super.markDead(connection)
     }
   }
 
@@ -457,13 +505,17 @@ test('TimeoutError (should call markDead on the failing connection)', t => {
   })
 
   const transport = new Transport({
-    emit: () => {},
+    emit: () => true,
     connectionPool: pool,
     serializer: new Serializer(),
     maxRetries: 0,
     requestTimeout: 500,
     sniffInterval: false,
-    sniffOnStart: false
+    sniffOnStart: false,
+    name: 'elasticsearch-js',
+    suggestCompression: false,
+    sniffOnConnectionFault: false,
+    sniffEndpoint: '_nodes/_all/http'
   })
 
   transport.request({
@@ -474,13 +526,13 @@ test('TimeoutError (should call markDead on the failing connection)', t => {
   })
 })
 
-test('ConnectionError (should call markDead on the failing connection)', t => {
+test('ConnectionError (should call markDead on the failing connection)', (t: any) => {
   t.plan(2)
 
   class CustomConnectionPool extends ConnectionPool {
     markDead (connection) {
       t.strictEqual(connection.id, 'node1')
-      super.markDead(connection)
+      return super.markDead(connection)
     }
   }
 
@@ -491,13 +543,17 @@ test('ConnectionError (should call markDead on the failing connection)', t => {
   })
 
   const transport = new Transport({
-    emit: () => {},
+    emit: () => true,
     connectionPool: pool,
     serializer: new Serializer(),
     maxRetries: 0,
     requestTimeout: 30000,
     sniffInterval: false,
-    sniffOnStart: false
+    sniffOnStart: false,
+    name: 'elasticsearch-js',
+    suggestCompression: false,
+    sniffOnConnectionFault: false,
+    sniffEndpoint: '_nodes/_all/http'
   })
 
   transport.request({
@@ -508,7 +564,7 @@ test('ConnectionError (should call markDead on the failing connection)', t => {
   })
 })
 
-test('Retry mechanism', t => {
+test('Retry mechanism', (t: any) => {
   t.plan(2)
 
   var count = 0
@@ -538,13 +594,17 @@ test('Retry mechanism', t => {
     }])
 
     const transport = new Transport({
-      emit: () => {},
+      emit: () => true,
       connectionPool: pool,
       serializer: new Serializer(),
       maxRetries: 1,
       requestTimeout: 250,
       sniffInterval: false,
-      sniffOnStart: false
+      sniffOnStart: false,
+      name: 'elasticsearch-js',
+      suggestCompression: false,
+      sniffOnConnectionFault: false,
+      sniffEndpoint: '_nodes/_all/http'
     })
 
     transport.request({
@@ -558,7 +618,7 @@ test('Retry mechanism', t => {
   })
 })
 
-test('Custom retry mechanism', t => {
+test('Custom retry mechanism', (t: any) => {
   t.plan(2)
 
   var count = 0
@@ -588,13 +648,17 @@ test('Custom retry mechanism', t => {
     }])
 
     const transport = new Transport({
-      emit: () => {},
+      emit: () => true,
       connectionPool: pool,
       serializer: new Serializer(),
       maxRetries: 0,
       requestTimeout: 250,
       sniffInterval: false,
-      sniffOnStart: false
+      sniffOnStart: false,
+      name: 'elasticsearch-js',
+      suggestCompression: false,
+      sniffOnConnectionFault: false,
+      sniffEndpoint: '_nodes/_all/http'
     })
 
     transport.request({
@@ -610,7 +674,7 @@ test('Custom retry mechanism', t => {
   })
 })
 
-test('Should not retry on 429', t => {
+test('Should not retry on 429', (t: any) => {
   t.plan(3)
 
   var count = 0
@@ -635,13 +699,17 @@ test('Should not retry on 429', t => {
     }])
 
     const transport = new Transport({
-      emit: () => {},
+      emit: () => true,
       connectionPool: pool,
       serializer: new Serializer(),
       maxRetries: 5,
       requestTimeout: 250,
       sniffInterval: false,
-      sniffOnStart: false
+      sniffOnStart: false,
+      name: 'elasticsearch-js',
+      suggestCompression: false,
+      sniffOnConnectionFault: false,
+      sniffEndpoint: '_nodes/_all/http'
     })
 
     transport.request({
@@ -649,19 +717,19 @@ test('Should not retry on 429', t => {
       path: '/hello'
     }, (err, result) => {
       t.ok(err)
-      t.strictEqual(err.statusCode, 429)
+      t.strictEqual((err as ResponseError).statusCode, 429)
       server.stop()
     })
   })
 })
 
-test('Should call markAlive with a successful response', t => {
+test('Should call markAlive with a successful response', (t: any) => {
   t.plan(3)
 
   class CustomConnectionPool extends ConnectionPool {
     markAlive (connection) {
       t.strictEqual(connection.id, 'node1')
-      super.markAlive(connection)
+      return super.markAlive(connection)
     }
   }
 
@@ -672,13 +740,17 @@ test('Should call markAlive with a successful response', t => {
   })
 
   const transport = new Transport({
-    emit: () => {},
+    emit: () => true,
     connectionPool: pool,
     serializer: new Serializer(),
     maxRetries: 3,
     requestTimeout: 30000,
     sniffInterval: false,
-    sniffOnStart: false
+    sniffOnStart: false,
+    name: 'elasticsearch-js',
+    suggestCompression: false,
+    sniffOnConnectionFault: false,
+    sniffEndpoint: '_nodes/_all/http'
   })
 
   transport.request({
@@ -690,7 +762,7 @@ test('Should call markAlive with a successful response', t => {
   })
 })
 
-test('Should call resurrect on every request', t => {
+test('Should call resurrect on every request', (t: any) => {
   t.plan(5)
 
   class CustomConnectionPool extends ConnectionPool {
@@ -708,14 +780,17 @@ test('Should call resurrect on every request', t => {
   })
 
   const transport = new Transport({
-    emit: () => {},
+    emit: () => true,
     connectionPool: pool,
     serializer: new Serializer(),
     maxRetries: 3,
     requestTimeout: 30000,
     sniffInterval: false,
     sniffOnStart: false,
-    name: 'elasticsearch-js'
+    name: 'elasticsearch-js',
+    suggestCompression: false,
+    sniffOnConnectionFault: false,
+    sniffEndpoint: '_nodes/_all/http'
   })
 
   transport.request({
@@ -727,23 +802,27 @@ test('Should call resurrect on every request', t => {
   })
 })
 
-test('Should return a request aborter utility', t => {
+test('Should return a request aborter utility', (t: any) => {
   t.plan(1)
 
-  const pool = new ConnectionPool({ Connection, MockConnection })
+  const pool = new ConnectionPool({ Connection: MockConnection })
   pool.addConnection({
     url: new URL('http://localhost:9200'),
     id: 'node1'
   })
 
   const transport = new Transport({
-    emit: () => {},
+    emit: () => true,
     connectionPool: pool,
     serializer: new Serializer(),
     maxRetries: 3,
     requestTimeout: 30000,
     sniffInterval: false,
-    sniffOnStart: false
+    sniffOnStart: false,
+    name: 'elasticsearch-js',
+    suggestCompression: false,
+    sniffOnConnectionFault: false,
+    sniffEndpoint: '_nodes/_all/http'
   })
 
   const request = transport.request({
@@ -757,7 +836,7 @@ test('Should return a request aborter utility', t => {
   t.pass('ok')
 })
 
-test('Retry mechanism and abort', t => {
+test('Retry mechanism and abort', (t: any) => {
   t.plan(1)
 
   function handler (req, res) {
@@ -782,19 +861,24 @@ test('Retry mechanism and abort', t => {
 
     var count = 0
     const transport = new Transport({
-      emit: event => {
+      emit: even(t: any) => {
         if (event === 'request' && count++ > 0) {
           request.abort()
           server.stop()
           t.pass('ok')
         }
+        return true
       },
       connectionPool: pool,
       serializer: new Serializer(),
       maxRetries: 2,
       requestTimeout: 100,
       sniffInterval: false,
-      sniffOnStart: false
+      sniffOnStart: false,
+      name: 'elasticsearch-js',
+      suggestCompression: false,
+      sniffOnConnectionFault: false,
+      sniffEndpoint: '_nodes/_all/http'
     })
 
     const request = transport.request({
@@ -806,7 +890,7 @@ test('Retry mechanism and abort', t => {
   })
 })
 
-test('ResponseError', t => {
+test('ResponseError', (t: any) => {
   t.plan(3)
 
   function handler (req, res) {
@@ -820,13 +904,17 @@ test('ResponseError', t => {
     pool.addConnection(`http://localhost:${port}`)
 
     const transport = new Transport({
-      emit: () => {},
+      emit: () => true,
       connectionPool: pool,
       serializer: new Serializer(),
       maxRetries: 3,
       requestTimeout: 30000,
       sniffInterval: false,
-      sniffOnStart: false
+      sniffOnStart: false,
+      name: 'elasticsearch-js',
+      suggestCompression: false,
+      sniffOnConnectionFault: false,
+      sniffEndpoint: '_nodes/_all/http'
     })
 
     transport.request({
@@ -834,14 +922,14 @@ test('ResponseError', t => {
       path: '/hello'
     }, (err, { body }) => {
       t.ok(err instanceof ResponseError)
-      t.deepEqual(err.body, { status: 500 })
-      t.strictEqual(err.statusCode, 500)
+      t.deepEqual((err as ResponseError).body, { status: 500 })
+      t.strictEqual((err as ResponseError).statusCode, 500)
       server.stop()
     })
   })
 })
 
-test('Override requestTimeout', t => {
+test('Override requestTimeout', (t: any) => {
   t.plan(2)
   function handler (req, res) {
     setTimeout(() => {
@@ -855,13 +943,17 @@ test('Override requestTimeout', t => {
     pool.addConnection(`http://localhost:${port}`)
 
     const transport = new Transport({
-      emit: () => {},
+      emit: () => true,
       connectionPool: pool,
       serializer: new Serializer(),
       maxRetries: 3,
       requestTimeout: 500,
       sniffInterval: false,
-      sniffOnStart: false
+      sniffOnStart: false,
+      name: 'elasticsearch-js',
+      suggestCompression: false,
+      sniffOnConnectionFault: false,
+      sniffEndpoint: '_nodes/_all/http'
     })
 
     transport.request({
@@ -877,8 +969,8 @@ test('Override requestTimeout', t => {
   })
 })
 
-test('sniff', t => {
-  t.test('sniffOnStart', t => {
+test('sniff', (t: any) => {
+  t.test('sniffOnStart', (t: any) => {
     t.plan(1)
 
     class MyTransport extends Transport {
@@ -892,18 +984,21 @@ test('sniff', t => {
 
     // eslint-disable-next-line
     new MyTransport({
-      emit: () => {},
+      emit: () => true,
       connectionPool: pool,
       serializer: new Serializer(),
       maxRetries: 3,
       requestTimeout: 30000,
       sniffInterval: false,
       sniffOnStart: true,
-      sniffEndpoint: '/sniff'
+      sniffEndpoint: '/sniff',
+      name: 'elasticsearch-js',
+      suggestCompression: false,
+      sniffOnConnectionFault: false
     })
   })
 
-  t.test('sniffOnConnectionFault', t => {
+  t.test('sniffOnConnectionFault', (t: any) => {
     t.plan(2)
 
     class MyTransport extends Transport {
@@ -916,14 +1011,17 @@ test('sniff', t => {
     pool.addConnection('http://localhost:9200')
 
     const transport = new MyTransport({
-      emit: () => {},
+      emit: () => true,
       connectionPool: pool,
       serializer: new Serializer(),
       maxRetries: 0,
       requestTimeout: 500,
       sniffInterval: false,
       sniffOnConnectionFault: true,
-      sniffEndpoint: '/sniff'
+      sniffEndpoint: '/sniff',
+      name: 'elasticsearch-js',
+      suggestCompression: false,
+      sniffOnStart: false
     })
 
     transport.request({
@@ -934,7 +1032,7 @@ test('sniff', t => {
     })
   })
 
-  t.test('sniffInterval', t => {
+  t.test('sniffInterval', (t: any) => {
     t.plan(6)
 
     const clock = lolex.install({ toFake: ['Date'] })
@@ -950,13 +1048,17 @@ test('sniff', t => {
     pool.addConnection('http://localhost:9200')
 
     const transport = new MyTransport({
-      emit: () => {},
+      emit: () => true,
       connectionPool: pool,
       serializer: new Serializer(),
       maxRetries: 3,
       requestTimeout: 3000,
       sniffInterval: 1,
-      sniffEndpoint: '/sniff'
+      sniffEndpoint: '/sniff',
+      name: 'elasticsearch-js',
+      suggestCompression: false,
+      sniffOnConnectionFault: false,
+      sniffOnStart: false
     })
 
     const params = { method: 'GET', path: '/' }
@@ -970,12 +1072,13 @@ test('sniff', t => {
     transport.request(params, t.error)
   })
 
-  t.test('errored', t => {
+  t.test('errored', (t: any) => {
     t.plan(1)
 
     class CustomConnectionPool extends ConnectionPool {
-      nodesToHost () {
+      nodesToHost (nodes, protocol) {
         t.fail('This should not be called')
+        return []
       }
     }
 
@@ -983,13 +1086,17 @@ test('sniff', t => {
     pool.addConnection('http://localhost:9200')
 
     const transport = new Transport({
-      emit: () => {},
+      emit: () => true,
       connectionPool: pool,
       serializer: new Serializer(),
       maxRetries: 0,
       requestTimeout: 30000,
       sniffInterval: false,
-      sniffEndpoint: '/sniff'
+      sniffEndpoint: '/sniff',
+      name: 'elasticsearch-js',
+      suggestCompression: false,
+      sniffOnConnectionFault: false,
+      sniffOnStart: false
     })
 
     transport.sniff((err, hosts) => {
@@ -1001,17 +1108,17 @@ test('sniff', t => {
 })
 
 test(`Should mark as dead connections where the statusCode is 502/3/4
-      and return a ResponseError if there are no more attempts`, t => {
+      and return a ResponseError if there are no more attempts`, (t: any) => {
   ;[502, 503, 504].forEach(runTest)
 
   function runTest (statusCode) {
-    t.test(statusCode, t => {
+    t.test(statusCode, (t: any) => {
       t.plan(3)
 
       class CustomConnectionPool extends ConnectionPool {
         markDead (connection) {
           t.ok('called')
-          super.markDead(connection)
+          return super.markDead(connection)
         }
       }
 
@@ -1019,13 +1126,17 @@ test(`Should mark as dead connections where the statusCode is 502/3/4
       pool.addConnection('http://localhost:9200')
 
       const transport = new Transport({
-        emit: () => {},
+        emit: () => true,
         connectionPool: pool,
         serializer: new Serializer(),
         maxRetries: 0,
         requestTimeout: 30000,
         sniffInterval: false,
-        sniffOnStart: false
+        sniffOnStart: false,
+        name: 'elasticsearch-js',
+        suggestCompression: false,
+        sniffOnConnectionFault: false,
+        sniffEndpoint: '_nodes/_all/http'
       })
 
       transport.request({
@@ -1045,11 +1156,11 @@ test(`Should mark as dead connections where the statusCode is 502/3/4
   t.end()
 })
 
-test('Should retry the request if the statusCode is 502/3/4', t => {
+test('Should retry the request if the statusCode is 502/3/4', (t: any) => {
   ;[502, 503, 504].forEach(runTest)
 
   function runTest (statusCode) {
-    t.test(statusCode, t => {
+    t.test(statusCode, (t: any) => {
       t.plan(3)
 
       var first = true
@@ -1065,6 +1176,7 @@ test('Should retry the request if the statusCode is 502/3/4', t => {
       class CustomConnectionPool extends ConnectionPool {
         markDead (connection) {
           t.ok('called')
+          return super.markDead(connection)
         }
       }
 
@@ -1073,13 +1185,17 @@ test('Should retry the request if the statusCode is 502/3/4', t => {
         pool.addConnection(`http://localhost:${port}`)
 
         const transport = new Transport({
-          emit: () => {},
+          emit: () => true,
           connectionPool: pool,
           serializer: new Serializer(),
           maxRetries: 1,
           requestTimeout: 30000,
           sniffInterval: false,
-          sniffOnStart: false
+          sniffOnStart: false,
+          name: 'elasticsearch-js',
+          suggestCompression: false,
+          sniffOnConnectionFault: false,
+          sniffEndpoint: '_nodes/_all/http'
         })
 
         transport.request({
@@ -1097,20 +1213,24 @@ test('Should retry the request if the statusCode is 502/3/4', t => {
   t.end()
 })
 
-test('Ignore status code', t => {
+test('Ignore status code', (t: any) => {
   t.plan(4)
 
   const pool = new ConnectionPool({ Connection: MockConnection })
   pool.addConnection('http://localhost:9200')
 
   const transport = new Transport({
-    emit: () => {},
+    emit: () => true,
     connectionPool: pool,
     serializer: new Serializer(),
     maxRetries: 3,
     requestTimeout: 30000,
     sniffInterval: false,
-    sniffOnStart: false
+    sniffOnStart: false,
+    name: 'elasticsearch-js',
+    suggestCompression: false,
+    sniffOnConnectionFault: false,
+    sniffEndpoint: '_nodes/_all/http'
   })
 
   transport.request({
@@ -1140,7 +1260,7 @@ test('Ignore status code', t => {
   })
 })
 
-test('Should serialize the querystring', t => {
+test('Should serialize the querystring', (t: any) => {
   t.plan(2)
 
   function handler (req, res) {
@@ -1153,13 +1273,17 @@ test('Should serialize the querystring', t => {
     pool.addConnection(`http://localhost:${port}`)
 
     const transport = new Transport({
-      emit: () => {},
+      emit: () => true,
       connectionPool: pool,
       serializer: new Serializer(),
       maxRetries: 3,
       requestTimeout: 30000,
       sniffInterval: false,
-      sniffOnStart: false
+      sniffOnStart: false,
+      name: 'elasticsearch-js',
+      suggestCompression: false,
+      sniffOnConnectionFault: false,
+      sniffEndpoint: '_nodes/_all/http'
     })
 
     transport.request({
@@ -1176,7 +1300,7 @@ test('Should serialize the querystring', t => {
   })
 })
 
-test('timeout option', t => {
+test('timeout option', (t: any) => {
   function handler (req, res) {
     setTimeout(() => {
       res.setHeader('Content-Type', 'application/json;utf=8')
@@ -1184,8 +1308,8 @@ test('timeout option', t => {
     }, 1000)
   }
 
-  t.test('as number', t => {
-    t.test('global', t => {
+  t.test('as number', (t: any) => {
+    t.test('global', (t: any) => {
       t.plan(1)
 
       buildServer(handler, ({ port }, server) => {
@@ -1196,13 +1320,17 @@ test('timeout option', t => {
         })
 
         const transport = new Transport({
-          emit: () => {},
+          emit: () => true,
           connectionPool: pool,
           serializer: new Serializer(),
           maxRetries: 0,
           requestTimeout: 500,
           sniffInterval: false,
-          sniffOnStart: false
+          sniffOnStart: false,
+          name: 'elasticsearch-js',
+          suggestCompression: false,
+          sniffOnConnectionFault: false,
+          sniffEndpoint: '_nodes/_all/http'
         })
 
         transport.request({
@@ -1215,7 +1343,7 @@ test('timeout option', t => {
       })
     })
 
-    t.test('custom', t => {
+    t.test('custom', (t: any) => {
       t.plan(1)
 
       buildServer(handler, ({ port }, server) => {
@@ -1226,13 +1354,17 @@ test('timeout option', t => {
         })
 
         const transport = new Transport({
-          emit: () => {},
+          emit: () => true,
           connectionPool: pool,
           serializer: new Serializer(),
           maxRetries: 0,
           requestTimeout: 30000,
           sniffInterval: false,
-          sniffOnStart: false
+          sniffOnStart: false,
+          name: 'elasticsearch-js',
+          suggestCompression: false,
+          sniffOnConnectionFault: false,
+          sniffEndpoint: '_nodes/_all/http'
         })
 
         transport.request({
@@ -1250,8 +1382,8 @@ test('timeout option', t => {
     t.end()
   })
 
-  t.test('as string', t => {
-    t.test('global', t => {
+  t.test('as string', (t: any) => {
+    t.test('global', (t: any) => {
       t.plan(1)
 
       buildServer(handler, ({ port }, server) => {
@@ -1262,13 +1394,17 @@ test('timeout option', t => {
         })
 
         const transport = new Transport({
-          emit: () => {},
+          emit: () => true,
           connectionPool: pool,
           serializer: new Serializer(),
           maxRetries: 0,
           requestTimeout: '0.5s',
           sniffInterval: false,
-          sniffOnStart: false
+          sniffOnStart: false,
+          name: 'elasticsearch-js',
+          suggestCompression: false,
+          sniffOnConnectionFault: false,
+          sniffEndpoint: '_nodes/_all/http'
         })
 
         transport.request({
@@ -1281,7 +1417,7 @@ test('timeout option', t => {
       })
     })
 
-    t.test('custom', t => {
+    t.test('custom', (t: any) => {
       t.plan(1)
 
       buildServer(handler, ({ port }, server) => {
@@ -1292,13 +1428,17 @@ test('timeout option', t => {
         })
 
         const transport = new Transport({
-          emit: () => {},
+          emit: () => true,
           connectionPool: pool,
           serializer: new Serializer(),
           maxRetries: 0,
           requestTimeout: '30s',
           sniffInterval: false,
-          sniffOnStart: false
+          sniffOnStart: false,
+          name: 'elasticsearch-js',
+          suggestCompression: false,
+          sniffOnConnectionFault: false,
+          sniffEndpoint: '_nodes/_all/http'
         })
 
         transport.request({
@@ -1319,20 +1459,24 @@ test('timeout option', t => {
   t.end()
 })
 
-test('Should cast to boolean HEAD request', t => {
-  t.test('2xx response', t => {
+test('Should cast to boolean HEAD request', (t: any) => {
+  t.test('2xx response', (t: any) => {
     t.plan(3)
     const pool = new ConnectionPool({ Connection: MockConnection })
     pool.addConnection('http://localhost:9200')
 
     const transport = new Transport({
-      emit: () => {},
+      emit: () => true,
       connectionPool: pool,
       serializer: new Serializer(),
       maxRetries: 3,
       requestTimeout: 30000,
       sniffInterval: false,
-      sniffOnStart: false
+      sniffOnStart: false,
+      name: 'elasticsearch-js',
+      suggestCompression: false,
+      sniffOnConnectionFault: false,
+      sniffEndpoint: '_nodes/_all/http'
     })
 
     transport.request({
@@ -1345,19 +1489,23 @@ test('Should cast to boolean HEAD request', t => {
     })
   })
 
-  t.test('404 response', t => {
+  t.test('404 response', (t: any) => {
     t.plan(3)
     const pool = new ConnectionPool({ Connection: MockConnection })
     pool.addConnection('http://localhost:9200')
 
     const transport = new Transport({
-      emit: () => {},
+      emit: () => true,
       connectionPool: pool,
       serializer: new Serializer(),
       maxRetries: 3,
       requestTimeout: 30000,
       sniffInterval: false,
-      sniffOnStart: false
+      sniffOnStart: false,
+      name: 'elasticsearch-js',
+      suggestCompression: false,
+      sniffOnConnectionFault: false,
+      sniffEndpoint: '_nodes/_all/http'
     })
 
     transport.request({
@@ -1370,20 +1518,24 @@ test('Should cast to boolean HEAD request', t => {
     })
   })
 
-  t.test('4xx response', t => {
+  t.test('4xx response', (t: any) => {
     t.plan(2)
 
     const pool = new ConnectionPool({ Connection: MockConnection })
     pool.addConnection('http://localhost:9200')
 
     const transport = new Transport({
-      emit: () => {},
+      emit: () => true,
       connectionPool: pool,
       serializer: new Serializer(),
       maxRetries: 3,
       requestTimeout: 30000,
       sniffInterval: false,
-      sniffOnStart: false
+      sniffOnStart: false,
+      name: 'elasticsearch-js',
+      suggestCompression: false,
+      sniffOnConnectionFault: false,
+      sniffEndpoint: '_nodes/_all/http'
     })
 
     transport.request({
@@ -1395,19 +1547,23 @@ test('Should cast to boolean HEAD request', t => {
     })
   })
 
-  t.test('5xx response', t => {
+  t.test('5xx response', (t: any) => {
     t.plan(2)
     const pool = new ConnectionPool({ Connection: MockConnection })
     pool.addConnection('http://localhost:9200')
 
     const transport = new Transport({
-      emit: () => {},
+      emit: () => true,
       connectionPool: pool,
       serializer: new Serializer(),
       maxRetries: 3,
       requestTimeout: 30000,
       sniffInterval: false,
-      sniffOnStart: false
+      sniffOnStart: false,
+      name: 'elasticsearch-js',
+      suggestCompression: false,
+      sniffOnConnectionFault: false,
+      sniffEndpoint: '_nodes/_all/http'
     })
 
     transport.request({
@@ -1422,7 +1578,7 @@ test('Should cast to boolean HEAD request', t => {
   t.end()
 })
 
-test('Suggest compression', t => {
+test('Suggest compression', (t: any) => {
   t.plan(2)
   function handler (req, res) {
     t.match(req.headers, {
@@ -1437,14 +1593,17 @@ test('Suggest compression', t => {
     pool.addConnection(`http://localhost:${port}`)
 
     const transport = new Transport({
-      emit: () => {},
+      emit: () => true,
       connectionPool: pool,
       serializer: new Serializer(),
       maxRetries: 3,
       requestTimeout: 30000,
       sniffInterval: false,
       sniffOnStart: false,
-      suggestCompression: true
+      suggestCompression: true,
+      name: 'elasticsearch-js',
+      sniffOnConnectionFault: false,
+      sniffEndpoint: '_nodes/_all/http'
     })
 
     transport.request({
@@ -1457,8 +1616,8 @@ test('Suggest compression', t => {
   })
 })
 
-test('Warning header', t => {
-  t.test('Single warning', t => {
+test('Warning header', (t: any) => {
+  t.test('Single warning', (t: any) => {
     t.plan(3)
 
     const warn = '112 - "cache down" "Wed, 21 Oct 2015 07:28:00 GMT"'
@@ -1473,13 +1632,17 @@ test('Warning header', t => {
       pool.addConnection(`http://localhost:${port}`)
 
       const transport = new Transport({
-        emit: () => {},
+        emit: () => true,
         connectionPool: pool,
         serializer: new Serializer(),
         maxRetries: 3,
         requestTimeout: 30000,
         sniffInterval: false,
-        sniffOnStart: false
+        sniffOnStart: false,
+        name: 'elasticsearch-js',
+        suggestCompression: false,
+        sniffOnConnectionFault: false,
+        sniffEndpoint: '_nodes/_all/http'
       })
 
       transport.request({
@@ -1494,7 +1657,7 @@ test('Warning header', t => {
     })
   })
 
-  t.test('Multiple warnings', t => {
+  t.test('Multiple warnings', (t: any) => {
     t.plan(4)
 
     const warn1 = '112 - "cache down" "Wed, 21 Oct 2015 07:28:00 GMT"'
@@ -1510,13 +1673,17 @@ test('Warning header', t => {
       pool.addConnection(`http://localhost:${port}`)
 
       const transport = new Transport({
-        emit: () => {},
+        emit: () => true,
         connectionPool: pool,
         serializer: new Serializer(),
         maxRetries: 3,
         requestTimeout: 30000,
         sniffInterval: false,
-        sniffOnStart: false
+        sniffOnStart: false,
+        name: 'elasticsearch-js',
+        suggestCompression: false,
+        sniffOnConnectionFault: false,
+        sniffEndpoint: '_nodes/_all/http'
       })
 
       transport.request({
@@ -1531,7 +1698,7 @@ test('Warning header', t => {
     })
   })
 
-  t.test('No warnings', t => {
+  t.test('No warnings', (t: any) => {
     t.plan(2)
 
     function handler (req, res) {
@@ -1544,13 +1711,17 @@ test('Warning header', t => {
       pool.addConnection(`http://localhost:${port}`)
 
       const transport = new Transport({
-        emit: () => {},
+        emit: () => true,
         connectionPool: pool,
         serializer: new Serializer(),
         maxRetries: 3,
         requestTimeout: 30000,
         sniffInterval: false,
-        sniffOnStart: false
+        sniffOnStart: false,
+        name: 'elasticsearch-js',
+        suggestCompression: false,
+        sniffOnConnectionFault: false,
+        sniffEndpoint: '_nodes/_all/http'
       })
 
       transport.request({
@@ -1564,7 +1735,7 @@ test('Warning header', t => {
     })
   })
 
-  t.test('Multiple warnings and external warning', t => {
+  t.test('Multiple warnings and external warning', (t: any) => {
     t.plan(5)
 
     const warn1 = '112 - "cache down" "Wed, 21 Oct 2015 07:28:00 GMT"'
@@ -1580,13 +1751,17 @@ test('Warning header', t => {
       pool.addConnection(`http://localhost:${port}`)
 
       const transport = new Transport({
-        emit: () => {},
+        emit: () => true,
         connectionPool: pool,
         serializer: new Serializer(),
         maxRetries: 3,
         requestTimeout: 30000,
         sniffInterval: false,
-        sniffOnStart: false
+        sniffOnStart: false,
+        name: 'elasticsearch-js',
+        suggestCompression: false,
+        sniffOnConnectionFault: false,
+        sniffEndpoint: '_nodes/_all/http'
       })
 
       transport.request({
@@ -1606,7 +1781,7 @@ test('Warning header', t => {
   t.end()
 })
 
-test('asStream set to true', t => {
+test('asStream set to true', (t: any) => {
   t.plan(3)
   function handler (req, res) {
     res.setHeader('Content-Type', 'application/json;utf=8')
@@ -1618,13 +1793,17 @@ test('asStream set to true', t => {
     pool.addConnection(`http://localhost:${port}`)
 
     const transport = new Transport({
-      emit: () => {},
+      emit: () => true,
       connectionPool: pool,
       serializer: new Serializer(),
       maxRetries: 3,
       requestTimeout: 30000,
       sniffInterval: false,
-      sniffOnStart: false
+      sniffOnStart: false,
+      name: 'elasticsearch-js',
+      suggestCompression: false,
+      sniffOnConnectionFault: false,
+      sniffEndpoint: '_nodes/_all/http'
     })
 
     transport.request({
@@ -1651,8 +1830,8 @@ test('asStream set to true', t => {
   })
 })
 
-test('Compress request', t => {
-  t.test('gzip as request option', t => {
+test('Compress request', (t: any) => {
+  t.test('gzip as request option', (t: any) => {
     t.plan(4)
     function handler (req, res) {
       t.match(req.headers, {
@@ -1676,13 +1855,17 @@ test('Compress request', t => {
       pool.addConnection(`http://localhost:${port}`)
 
       const transport = new Transport({
-        emit: () => {},
+        emit: () => true,
         connectionPool: pool,
         serializer: new Serializer(),
         maxRetries: 3,
         requestTimeout: 30000,
         sniffInterval: false,
-        sniffOnStart: false
+        sniffOnStart: false,
+        name: 'elasticsearch-js',
+        suggestCompression: false,
+        sniffOnConnectionFault: false,
+        sniffEndpoint: '_nodes/_all/http'
       })
 
       transport.request({
@@ -1699,7 +1882,7 @@ test('Compress request', t => {
     })
   })
 
-  t.test('gzip as transport option', t => {
+  t.test('gzip as transport option', (t: any) => {
     t.plan(4)
     function handler (req, res) {
       t.match(req.headers, {
@@ -1723,14 +1906,18 @@ test('Compress request', t => {
       pool.addConnection(`http://localhost:${port}`)
 
       const transport = new Transport({
-        emit: () => {},
+        emit: () => true,
         connectionPool: pool,
         serializer: new Serializer(),
         maxRetries: 3,
         requestTimeout: 30000,
         sniffInterval: false,
         sniffOnStart: false,
-        compression: 'gzip'
+        compression: 'gzip',
+        name: 'elasticsearch-js',
+        suggestCompression: false,
+        sniffOnConnectionFault: false,
+        sniffEndpoint: '_nodes/_all/http'
       })
 
       transport.request({
@@ -1745,7 +1932,7 @@ test('Compress request', t => {
     })
   })
 
-  t.test('gzip stream body', t => {
+  t.test('gzip stream body', (t: any) => {
     t.plan(4)
     function handler (req, res) {
       t.match(req.headers, {
@@ -1769,13 +1956,17 @@ test('Compress request', t => {
       pool.addConnection(`http://localhost:${port}`)
 
       const transport = new Transport({
-        emit: () => {},
+        emit: () => true,
         connectionPool: pool,
         serializer: new Serializer(),
         maxRetries: 3,
         requestTimeout: 30000,
         sniffInterval: false,
-        sniffOnStart: false
+        sniffOnStart: false,
+        name: 'elasticsearch-js',
+        suggestCompression: false,
+        sniffOnConnectionFault: false,
+        sniffEndpoint: '_nodes/_all/http'
       })
 
       transport.request({
@@ -1792,18 +1983,19 @@ test('Compress request', t => {
     })
   })
 
-  t.test('Should throw on invalid compression value', t => {
+  t.test('Should throw on invalid compression value', (t: any) => {
     t.plan(2)
 
     try {
       new Transport({ // eslint-disable-line
-        emit: () => {},
+        emit: () => true,
         connectionPool: new ConnectionPool({ Connection }),
         serializer: new Serializer(),
         maxRetries: 3,
         requestTimeout: 30000,
         sniffInterval: false,
         sniffOnStart: false,
+        // @ts-ignore
         compression: 'deflate'
       })
       t.fail('Should throw')
@@ -1816,8 +2008,8 @@ test('Compress request', t => {
   t.end()
 })
 
-test('Headers configuration', t => {
-  t.test('Global option', t => {
+test('Headers configuration', (t: any) => {
+  t.test('Global option', (t: any) => {
     t.plan(3)
     function handler (req, res) {
       t.match(req.headers, { 'x-foo': 'bar' })
@@ -1830,7 +2022,7 @@ test('Headers configuration', t => {
       pool.addConnection(`http://localhost:${port}`)
 
       const transport = new Transport({
-        emit: () => {},
+        emit: () => true,
         connectionPool: pool,
         serializer: new Serializer(),
         maxRetries: 3,
@@ -1839,7 +2031,11 @@ test('Headers configuration', t => {
         sniffOnStart: false,
         headers: {
           'x-foo': 'bar'
-        }
+        },
+        name: 'elasticsearch-js',
+        suggestCompression: false,
+        sniffOnConnectionFault: false,
+        sniffEndpoint: '_nodes/_all/http'
       })
 
       transport.request({
@@ -1853,7 +2049,7 @@ test('Headers configuration', t => {
     })
   })
 
-  t.test('Global option and custom option', t => {
+  t.test('Global option and custom option', (t: any) => {
     t.plan(3)
     function handler (req, res) {
       t.match(req.headers, {
@@ -1869,7 +2065,7 @@ test('Headers configuration', t => {
       pool.addConnection(`http://localhost:${port}`)
 
       const transport = new Transport({
-        emit: () => {},
+        emit: () => true,
         connectionPool: pool,
         serializer: new Serializer(),
         maxRetries: 3,
@@ -1878,7 +2074,11 @@ test('Headers configuration', t => {
         sniffOnStart: false,
         headers: {
           'x-foo': 'bar'
-        }
+        },
+        name: 'elasticsearch-js',
+        suggestCompression: false,
+        sniffOnConnectionFault: false,
+        sniffEndpoint: '_nodes/_all/http'
       })
 
       transport.request({
@@ -1894,7 +2094,7 @@ test('Headers configuration', t => {
     })
   })
 
-  t.test('Custom options should override global option', t => {
+  t.test('Custom options should override global option', (t: any) => {
     t.plan(3)
     function handler (req, res) {
       t.match(req.headers, { 'x-foo': 'faz' })
@@ -1907,7 +2107,7 @@ test('Headers configuration', t => {
       pool.addConnection(`http://localhost:${port}`)
 
       const transport = new Transport({
-        emit: () => {},
+        emit: () => true,
         connectionPool: pool,
         serializer: new Serializer(),
         maxRetries: 3,
@@ -1916,7 +2116,11 @@ test('Headers configuration', t => {
         sniffOnStart: false,
         headers: {
           'x-foo': 'bar'
-        }
+        },
+        name: 'elasticsearch-js',
+        suggestCompression: false,
+        sniffOnConnectionFault: false,
+        sniffEndpoint: '_nodes/_all/http'
       })
 
       transport.request({
@@ -1935,14 +2139,14 @@ test('Headers configuration', t => {
   t.end()
 })
 
-test('nodeFilter and nodeSelector', t => {
+test('nodeFilter and nodeSelector', (t: any) => {
   t.plan(4)
 
   const pool = new ConnectionPool({ Connection: MockConnection })
   pool.addConnection('http://localhost:9200')
 
   const transport = new Transport({
-    emit: () => {},
+    emit: () => true,
     connectionPool: pool,
     serializer: new Serializer(),
     maxRetries: 3,
@@ -1956,7 +2160,11 @@ test('nodeFilter and nodeSelector', t => {
     nodeSelector: conns => {
       t.ok('called')
       return conns[0]
-    }
+    },
+    name: 'elasticsearch-js',
+    suggestCompression: false,
+    sniffOnConnectionFault: false,
+    sniffEndpoint: '_nodes/_all/http'
   })
 
   transport.request({
@@ -1968,8 +2176,8 @@ test('nodeFilter and nodeSelector', t => {
   })
 })
 
-test('Should accept custom querystring in the optons object', t => {
-  t.test('Options object', t => {
+test('Should accept custom querystring in the optons object', (t: any) => {
+  t.test('Options object', (t: any) => {
     t.plan(3)
 
     function handler (req, res) {
@@ -1983,13 +2191,17 @@ test('Should accept custom querystring in the optons object', t => {
       pool.addConnection(`http://localhost:${port}`)
 
       const transport = new Transport({
-        emit: () => {},
+        emit: () => true,
         connectionPool: pool,
         serializer: new Serializer(),
         maxRetries: 3,
         requestTimeout: 30000,
         sniffInterval: false,
-        sniffOnStart: false
+        sniffOnStart: false,
+        name: 'elasticsearch-js',
+        suggestCompression: false,
+        sniffOnConnectionFault: false,
+        sniffEndpoint: '_nodes/_all/http'
       })
 
       transport.request({
@@ -2005,7 +2217,7 @@ test('Should accept custom querystring in the optons object', t => {
     })
   })
 
-  t.test('Options object and params', t => {
+  t.test('Options object and params', (t: any) => {
     t.plan(3)
 
     function handler (req, res) {
@@ -2019,13 +2231,17 @@ test('Should accept custom querystring in the optons object', t => {
       pool.addConnection(`http://localhost:${port}`)
 
       const transport = new Transport({
-        emit: () => {},
+        emit: () => true,
         connectionPool: pool,
         serializer: new Serializer(),
         maxRetries: 3,
         requestTimeout: 30000,
         sniffInterval: false,
-        sniffOnStart: false
+        sniffOnStart: false,
+        name: 'elasticsearch-js',
+        suggestCompression: false,
+        sniffOnConnectionFault: false,
+        sniffEndpoint: '_nodes/_all/http'
       })
 
       transport.request({
@@ -2045,7 +2261,7 @@ test('Should accept custom querystring in the optons object', t => {
   t.end()
 })
 
-test('Should add an User-Agent header', t => {
+test('Should add an User-Agent header', (t: any) => {
   t.plan(2)
   const clientVersion = require('../../package.json').version
   const userAgent = `elasticsearch-js/${clientVersion} (${os.platform()} ${os.release()}-${os.arch()}; Node.js ${process.version})`
@@ -2063,13 +2279,17 @@ test('Should add an User-Agent header', t => {
     pool.addConnection(`http://localhost:${port}`)
 
     const transport = new Transport({
-      emit: () => {},
+      emit: () => true,
       connectionPool: pool,
       serializer: new Serializer(),
       maxRetries: 3,
       requestTimeout: 30000,
       sniffInterval: false,
-      sniffOnStart: false
+      sniffOnStart: false,
+      name: 'elasticsearch-js',
+      suggestCompression: false,
+      sniffOnConnectionFault: false,
+      sniffEndpoint: '_nodes/_all/http'
     })
 
     transport.request({
@@ -2082,7 +2302,7 @@ test('Should add an User-Agent header', t => {
   })
 })
 
-test('Should pass request params and options to generateRequestId', t => {
+test('Should pass request params and options to generateRequestId', (t: any) => {
   t.plan(3)
 
   const pool = new ConnectionPool({ Connection: MockConnection })
@@ -2092,7 +2312,7 @@ test('Should pass request params and options to generateRequestId', t => {
   const options = { context: { winter: 'is coming' } }
 
   const transport = new Transport({
-    emit: () => {},
+    emit: () => true,
     connectionPool: pool,
     serializer: new Serializer(),
     maxRetries: 3,
@@ -2103,7 +2323,11 @@ test('Should pass request params and options to generateRequestId', t => {
       t.deepEqual(requestParams, params)
       t.deepEqual(requestOptions, options)
       return 'id'
-    }
+    },
+    name: 'elasticsearch-js',
+    suggestCompression: false,
+    sniffOnConnectionFault: false,
+    sniffEndpoint: '_nodes/_all/http'
   })
 
   transport.request(params, options, t.error)

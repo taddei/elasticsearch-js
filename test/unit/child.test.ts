@@ -4,14 +4,12 @@
 
 'use strict'
 
-const { test } = require('tap')
-const { Client, errors } = require('../../index')
-const {
-  buildServer,
-  connection: { MockConnection }
-} = require('../utils')
+import { test } from 'tap'
+import { Client, errors } from '../../src'
+import { buildServer, connection } from '../utils'
+const { MockConnection } = connection
 
-test('Should create a child client (headers check)', t => {
+test('Should create a child client (headers check)', (t: any) => {
   t.plan(4)
 
   var count = 0
@@ -44,7 +42,7 @@ test('Should create a child client (headers check)', t => {
   })
 })
 
-test('Should create a child client (timeout check)', t => {
+test('Should create a child client (timeout check)', (t: any) => {
   t.plan(2)
 
   function handler (req, res) {
@@ -68,11 +66,12 @@ test('Should create a child client (timeout check)', t => {
   })
 })
 
-test('Client extensions', t => {
-  t.test('One level', t => {
+test('Client extensions', (t: any) => {
+  t.test('One level', (t: any) => {
     t.plan(1)
 
     const client = new Client({ node: 'http://localhost:9200' })
+
     client.extend('utility.index', () => {
       return () => t.ok('called')
     })
@@ -81,7 +80,7 @@ test('Client extensions', t => {
     child.utility.index()
   })
 
-  t.test('Two levels', t => {
+  t.test('Two levels', (t: any) => {
     t.plan(2)
 
     const client = new Client({ node: 'http://localhost:9200' })
@@ -99,7 +98,7 @@ test('Client extensions', t => {
     grandchild.utility.search()
   })
 
-  t.test('The child should not extend the parent', t => {
+  t.test('The child should not extend the parent', (t: any) => {
     t.plan(1)
 
     const client = new Client({ node: 'http://localhost:9200' })
@@ -119,8 +118,8 @@ test('Client extensions', t => {
   t.end()
 })
 
-test('Should share the event emitter', t => {
-  t.test('One level', t => {
+test('Should share the event emitter', (t: any) => {
+  t.test('One level', (t: any) => {
     t.plan(2)
 
     const client = new Client({
@@ -138,7 +137,7 @@ test('Should share the event emitter', t => {
     })
   })
 
-  t.test('Two levels', t => {
+  t.test('Two levels', (t: any) => {
     t.plan(2)
 
     const client = new Client({
@@ -157,7 +156,7 @@ test('Should share the event emitter', t => {
     })
   })
 
-  t.test('Child listener - one level', t => {
+  t.test('Child listener - one level', (t: any) => {
     t.plan(2)
 
     const client = new Client({
@@ -175,7 +174,7 @@ test('Should share the event emitter', t => {
     })
   })
 
-  t.test('Child listener - two levels', t => {
+  t.test('Child listener - two levels', (t: any) => {
     t.plan(2)
 
     const client = new Client({
@@ -197,7 +196,7 @@ test('Should share the event emitter', t => {
   t.end()
 })
 
-test('Should create a child client (generateRequestId check)', t => {
+test('Should create a child client (generateRequestId check)', (t: any) => {
   t.plan(6)
 
   function generateRequestId1 () {
@@ -235,7 +234,7 @@ test('Should create a child client (generateRequestId check)', t => {
   })
 })
 
-test('Should create a child client (name check)', t => {
+test('Should create a child client (name check)', (t: any) => {
   t.plan(8)
 
   const client = new Client({

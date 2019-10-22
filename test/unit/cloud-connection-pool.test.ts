@@ -4,25 +4,25 @@
 
 'use strict'
 
-const { test } = require('tap')
-const { CloudConnectionPool } = require('../../lib/pool')
-const Connection = require('../../lib/Connection')
+import { test } from 'tap'
+import { CloudConnectionPool } from '../../src/pool'
+import Connection from '../../src/Connection'
 
-test('Should expose a cloudConnection property', t => {
+test('Should expose a cloudConnection property', (t: any) => {
   const pool = new CloudConnectionPool({ Connection })
   pool.addConnection('http://localhost:9200/')
   t.ok(pool.cloudConnection instanceof Connection)
   t.end()
 })
 
-test('Get connection should always return cloudConnection', t => {
+test('Get connection should always return cloudConnection', (t: any) => {
   const pool = new CloudConnectionPool({ Connection })
   const conn = pool.addConnection('http://localhost:9200/')
   t.deepEqual(pool.getConnection(), conn)
   t.end()
 })
 
-test('pool.empty should reset cloudConnection', t => {
+test('pool.empty should reset cloudConnection', (t: any) => {
   const pool = new CloudConnectionPool({ Connection })
   pool.addConnection('http://localhost:9200/')
   t.ok(pool.cloudConnection instanceof Connection)

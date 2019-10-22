@@ -4,15 +4,17 @@
 
 'use strict'
 
-const { Connection } = require('../../index')
-const { TimeoutError } = require('../../lib/errors')
-const intoStream = require('into-stream')
+import { Connection } from '../../src'
+import { TimeoutError } from '../../src/errors'
+import intoStream from 'into-stream'
 
-class MockConnection extends Connection {
+export class MockConnection extends Connection {
   request (params, callback) {
     var aborted = false
     const stream = intoStream(JSON.stringify({ hello: 'world' }))
+    // @ts-ignore
     stream.statusCode = setStatusCode(params.path)
+    // @ts-ignore
     stream.headers = {
       'content-type': 'application/json;utf=8',
       date: new Date().toISOString(),
@@ -30,7 +32,7 @@ class MockConnection extends Connection {
   }
 }
 
-class MockConnectionTimeout extends Connection {
+export class MockConnectionTimeout extends Connection {
   request (params, callback) {
     var aborted = false
     process.nextTick(() => {
@@ -44,7 +46,7 @@ class MockConnectionTimeout extends Connection {
   }
 }
 
-class MockConnectionError extends Connection {
+export class MockConnectionError extends Connection {
   request (params, callback) {
     var aborted = false
     process.nextTick(() => {
@@ -58,7 +60,7 @@ class MockConnectionError extends Connection {
   }
 }
 
-class MockConnectionSniff extends Connection {
+export class MockConnectionSniff extends Connection {
   request (params, callback) {
     var aborted = false
     const sniffResult = {
@@ -78,7 +80,9 @@ class MockConnectionSniff extends Connection {
       }
     }
     const stream = intoStream(JSON.stringify(sniffResult))
+    // @ts-ignore
     stream.statusCode = setStatusCode(params.path)
+    // @ts-ignore
     stream.headers = {
       'content-type': 'application/json;utf=8',
       date: new Date().toISOString(),
@@ -105,11 +109,4 @@ function setStatusCode (path) {
     return statusCode
   }
   return 200
-}
-
-module.exports = {
-  MockConnection,
-  MockConnectionTimeout,
-  MockConnectionError,
-  MockConnectionSniff
 }

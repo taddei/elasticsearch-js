@@ -4,13 +4,13 @@
 
 'use strict'
 
-const { test } = require('tap')
-const { URL } = require('url')
-const BaseConnectionPool = require('../../lib/pool/BaseConnectionPool')
-const Connection = require('../../lib/Connection')
+import { test } from 'tap'
+import { URL } from 'url'
+import BaseConnectionPool from '../../src/pool/BaseConnectionPool'
+import Connection from '../../src/Connection'
 
-test('API', t => {
-  t.test('addConnection', t => {
+test('API', (t: any) => {
+  t.test('addConnection', (t: any) => {
     const pool = new BaseConnectionPool({ Connection })
     const href = 'http://localhost:9200/'
     pool.addConnection(href)
@@ -19,7 +19,7 @@ test('API', t => {
     t.end()
   })
 
-  t.test('addConnection should throw with two connections with the same id', t => {
+  t.test('addConnection should throw with two connections with the same id', (t: any) => {
     const pool = new BaseConnectionPool({ Connection })
     const href = 'http://localhost:9200/'
     pool.addConnection(href)
@@ -32,7 +32,7 @@ test('API', t => {
     t.end()
   })
 
-  t.test('addConnection should handle not-friendly url parameters for user and password', t => {
+  t.test('addConnection should handle not-friendly url parameters for user and password', (t: any) => {
     const pool = new BaseConnectionPool({ Connection })
     const href = 'http://us"er:p@assword@localhost:9200/'
     pool.addConnection(href)
@@ -45,27 +45,7 @@ test('API', t => {
     t.end()
   })
 
-  t.test('markDead', t => {
-    const pool = new BaseConnectionPool({ Connection, sniffEnabled: true })
-    const href = 'http://localhost:9200/'
-    var connection = pool.addConnection(href)
-    t.same(pool.markDead(connection), pool)
-    connection = pool.connections.find(c => c.id === href)
-    t.strictEqual(connection.status, Connection.statuses.ALIVE)
-    t.end()
-  })
-
-  t.test('markAlive', t => {
-    const pool = new BaseConnectionPool({ Connection, sniffEnabled: true })
-    const href = 'http://localhost:9200/'
-    var connection = pool.addConnection(href)
-    t.same(pool.markAlive(connection), pool)
-    connection = pool.connections.find(c => c.id === href)
-    t.strictEqual(connection.status, Connection.statuses.ALIVE)
-    t.end()
-  })
-
-  t.test('getConnection should throw', t => {
+  t.test('getConnection should throw', (t: any) => {
     const pool = new BaseConnectionPool({ Connection })
     const href = 'http://localhost:9200/'
     pool.addConnection(href)
@@ -78,7 +58,7 @@ test('API', t => {
     t.end()
   })
 
-  t.test('removeConnection', t => {
+  t.test('removeConnection', (t: any) => {
     const pool = new BaseConnectionPool({ Connection })
     const href = 'http://localhost:9200/'
     var connection = pool.addConnection(href)
@@ -87,7 +67,7 @@ test('API', t => {
     t.end()
   })
 
-  t.test('empty', t => {
+  t.test('empty', (t: any) => {
     const pool = new BaseConnectionPool({ Connection })
     pool.addConnection('http://localhost:9200/')
     pool.addConnection('http://localhost:9201/')
@@ -97,7 +77,7 @@ test('API', t => {
     })
   })
 
-  t.test('urlToHost', t => {
+  t.test('urlToHost', (t: any) => {
     const pool = new BaseConnectionPool({ Connection })
     const url = 'http://localhost:9200'
     t.deepEqual(
@@ -107,8 +87,8 @@ test('API', t => {
     t.end()
   })
 
-  t.test('nodesToHost', t => {
-    t.test('publish_address as ip address (IPv4)', t => {
+  t.test('nodesToHost', (t: any) => {
+    t.test('publish_address as ip address (IPv4)', (t: any) => {
       const pool = new BaseConnectionPool({ Connection })
       const nodes = {
         a1: {
@@ -150,7 +130,7 @@ test('API', t => {
       t.end()
     })
 
-    t.test('publish_address as ip address (IPv6)', t => {
+    t.test('publish_address as ip address (IPv6)', (t: any) => {
       const pool = new BaseConnectionPool({ Connection })
       const nodes = {
         a1: {
@@ -192,7 +172,7 @@ test('API', t => {
       t.end()
     })
 
-    t.test('publish_address as host/ip (IPv4)', t => {
+    t.test('publish_address as host/ip (IPv4)', (t: any) => {
       const pool = new BaseConnectionPool({ Connection })
       const nodes = {
         a1: {
@@ -234,7 +214,7 @@ test('API', t => {
       t.end()
     })
 
-    t.test('publish_address as host/ip (IPv6)', t => {
+    t.test('publish_address as host/ip (IPv6)', (t: any) => {
       const pool = new BaseConnectionPool({ Connection })
       const nodes = {
         a1: {
@@ -276,7 +256,7 @@ test('API', t => {
       t.end()
     })
 
-    t.test('Should use the configure protocol', t => {
+    t.test('Should use the configure protocol', (t: any) => {
       const pool = new BaseConnectionPool({ Connection })
       const nodes = {
         a1: {
@@ -301,8 +281,8 @@ test('API', t => {
     t.end()
   })
 
-  t.test('update', t => {
-    t.test('Should not update existing connections', t => {
+  t.test('update', (t: any) => {
+    t.test('Should not update existing connections', (t: any) => {
       t.plan(2)
       const pool = new BaseConnectionPool({ Connection })
       pool.addConnection([{
@@ -337,12 +317,12 @@ test('API', t => {
       t.ok(pool.connections.find(c => c.id === 'a2').roles !== null)
     })
 
-    t.test('Should not update existing connections (mark alive)', t => {
+    t.test('Should not update existing connections (mark alive)', (t: any) => {
       t.plan(5)
       class CustomBaseConnectionPool extends BaseConnectionPool {
         markAlive (connection) {
           t.ok('called')
-          super.markAlive(connection)
+          return super.markAlive(connection)
         }
       }
       const pool = new CustomBaseConnectionPool({ Connection })
@@ -383,12 +363,12 @@ test('API', t => {
       t.ok(pool.connections.find(c => c.id === 'a2').roles !== null)
     })
 
-    t.test('Should not update existing connections (same url, different id)', t => {
+    t.test('Should not update existing connections (same url, different id)', (t: any) => {
       t.plan(3)
       class CustomBaseConnectionPool extends BaseConnectionPool {
         markAlive (connection) {
           t.ok('called')
-          super.markAlive(connection)
+          return super.markAlive(connection)
         }
       }
       const pool = new CustomBaseConnectionPool({ Connection })
@@ -419,7 +399,7 @@ test('API', t => {
       t.strictEqual(pool.connections.find(c => c.id === 'http://127.0.0.1:9200/'), undefined)
     })
 
-    t.test('Add a new connection', t => {
+    t.test('Add a new connection', (t: any) => {
       t.plan(2)
       const pool = new BaseConnectionPool({ Connection })
       pool.addConnection({
@@ -446,7 +426,7 @@ test('API', t => {
       t.ok(pool.connections.find(c => c.id === 'a2'))
     })
 
-    t.test('Remove old connections', t => {
+    t.test('Remove old connections', (t: any) => {
       t.plan(3)
       const pool = new BaseConnectionPool({ Connection })
       pool.addConnection({
@@ -473,7 +453,7 @@ test('API', t => {
     t.end()
   })
 
-  t.test('CreateConnection', t => {
+  t.test('CreateConnection', (t: any) => {
     t.plan(1)
     const pool = new BaseConnectionPool({ Connection })
     const conn = pool.createConnection('http://localhost:9200')

@@ -4,12 +4,12 @@
 
 'use strict'
 
-const { test } = require('tap')
-const { URL } = require('url')
-const lolex = require('lolex')
-const workq = require('workq')
-const { buildCluster } = require('../utils')
-const { Client, events } = require('../../index')
+import { test } from 'tap'
+import lolex from 'lolex'
+import { URL } from 'url'
+import workq from 'workq'
+import { buildCluster} from '../utils'
+import { Client, events } from '../../src'
 
 /**
  * The aim of this test is to verify how the resurrect logic behaves

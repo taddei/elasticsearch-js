@@ -4,12 +4,14 @@
 
 'use strict'
 
-const { test } = require('tap')
-const { Client, events } = require('../../index')
-const { TimeoutError } = require('../../lib/errors')
-const { connection: { MockConnection, MockConnectionTimeout } } = require('../utils')
+import { test } from 'tap'
+import { Client, events, errors } from '../../src'
+import { connection } from '../utils'
 
-test('Should emit a request event when a request is performed', t => {
+const { MockConnection, MockConnectionTimeout } = connection
+const { TimeoutError } = errors
+
+test('Should emit a request event when a request is performed', (t: any) => {
   t.plan(3)
 
   const client = new Client({
@@ -31,11 +33,10 @@ test('Should emit a request event when a request is performed', t => {
           params: {
             method: 'GET',
             path: '/test/_search',
-            body: '',
+            body: undefined,
             querystring: 'q=foo%3Abar',
             headers: {
-              'Content-Type': 'application/json',
-              'Content-Length': '0'
+              'Content-Type': 'application/json'
             }
           },
           options: {},
@@ -58,7 +59,7 @@ test('Should emit a request event when a request is performed', t => {
   })
 })
 
-test('Should emit a response event in case of a successful response', t => {
+test('Should emit a response event in case of a successful response', (t: any) => {
   t.plan(3)
 
   const client = new Client({
@@ -83,11 +84,10 @@ test('Should emit a response event in case of a successful response', t => {
           params: {
             method: 'GET',
             path: '/test/_search',
-            body: '',
+            body: undefined,
             querystring: 'q=foo%3Abar',
             headers: {
-              'Content-Type': 'application/json',
-              'Content-Length': '0'
+              'Content-Type': 'application/json'
             }
           },
           options: {},
@@ -110,7 +110,7 @@ test('Should emit a response event in case of a successful response', t => {
   })
 })
 
-test('Should emit a response event with the error set', t => {
+test('Should emit a response event with the error set', (t: any) => {
   t.plan(3)
 
   const client = new Client({
@@ -133,11 +133,10 @@ test('Should emit a response event with the error set', t => {
           params: {
             method: 'GET',
             path: '/test/_search',
-            body: '',
+            body: undefined,
             querystring: 'q=foo%3Abar',
             headers: {
-              'Content-Type': 'application/json',
-              'Content-Length': '0'
+              'Content-Type': 'application/json'
             }
           },
           options: {

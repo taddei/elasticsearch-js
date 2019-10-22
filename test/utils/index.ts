@@ -4,11 +4,11 @@
 
 'use strict'
 
-const buildServer = require('./buildServer')
-const buildCluster = require('./buildCluster')
-const connection = require('./MockConnection')
+import buildServer from './buildServer'
+import buildCluster from './buildCluster'
+import * as connection from './MockConnection'
 
-module.exports = {
+export {
   buildServer,
   buildCluster,
   connection
