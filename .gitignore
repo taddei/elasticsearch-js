@@ -53,3 +53,5 @@ elasticsearch*
 test/benchmarks/macro/fixtures/*
 
 *-junit.xml
+
+lib
