@@ -34,7 +34,7 @@ function start (opts) {
   const mainOutputFile = join(packageFolder, 'index.js')
   const typeDefFile = join(__dirname, '..', 'index.d.ts')
   const docOutputFile = join(__dirname, '..', 'docs', 'reference.asciidoc')
-  const requestParamsOutputFile = join(packageFolder, 'requestParams.d.ts')
+  const requestParamsOutputFile = join(__dirname, '..', 'src', 'requestParams.ts')
   const allSpec = []
 
   log.text = 'Cleaning API folder...'
