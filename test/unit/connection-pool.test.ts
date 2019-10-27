@@ -14,9 +14,9 @@ import { connection } from '../utils'
 const { MockConnection, MockConnectionTimeout } = connection
 const { defaultNodeFilter, roundRobinSelector } = internals
 
-test('API', (t: any) => {
+test('API', t => {
   const val: any = null
-  t.test('addConnection', (t: any) => {
+  t.test('addConnection', t => {
     const pool = new ConnectionPool({ Connection })
     const href = 'http://localhost:9200/'
     pool.addConnection(href)
@@ -26,7 +26,7 @@ test('API', (t: any) => {
     t.end()
   })
 
-  t.test('addConnection should throw with two connections with the same id', (t: any) => {
+  t.test('addConnection should throw with two connections with the same id', t => {
     const pool = new ConnectionPool({ Connection })
     const href = 'http://localhost:9200/'
     pool.addConnection(href)
@@ -39,7 +39,7 @@ test('API', (t: any) => {
     t.end()
   })
 
-  t.test('addConnection should handle not-friendly url parameters for user and password', (t: any) => {
+  t.test('addConnection should handle not-friendly url parameters for user and password', t => {
     const pool = new ConnectionPool({ Connection })
     const href = 'http://us"er:p@assword@localhost:9200/'
     pool.addConnection(href)
@@ -52,7 +52,7 @@ test('API', (t: any) => {
     t.end()
   })
 
-  t.test('markDead', (t: any) => {
+  t.test('markDead', t => {
     const pool = new ConnectionPool({ Connection, sniffEnabled: true })
     const href = 'http://localhost:9200/'
     var connection = pool.addConnection(href)
@@ -64,7 +64,7 @@ test('API', (t: any) => {
     t.end()
   })
 
-  t.test('markDead should sort the dead queue by deadTimeout', (t: any) => {
+  t.test('markDead should sort the dead queue by deadTimeout', t => {
     const pool = new ConnectionPool({ Connection })
     const href1 = 'http://localhost:9200/1'
     const href2 = 'http://localhost:9200/2'
@@ -78,7 +78,7 @@ test('API', (t: any) => {
     }, 10)
   })
 
-  t.test('markAlive', (t: any) => {
+  t.test('markAlive', t => {
     const pool = new ConnectionPool({ Connection, sniffEnabled: true })
     const href = 'http://localhost:9200/'
     var connection = pool.addConnection(href)
@@ -92,9 +92,9 @@ test('API', (t: any) => {
     t.end()
   })
 
-  t.test('resurrect', (t: any) => {
-    t.test('ping strategy', (t: any) => {
-      t.test('alive', (t: any) => {
+  t.test('resurrect', t => {
+    t.test('ping strategy', t => {
+      t.test('alive', t => {
         const pool = new ConnectionPool({
           resurrectStrategy: 'ping',
           pingTimeout: 3000,
@@ -120,7 +120,7 @@ test('API', (t: any) => {
         })
       })
 
-      t.test('dead', (t: any) => {
+      t.test('dead', t => {
         const pool = new ConnectionPool({
           resurrectStrategy: 'ping',
           pingTimeout: 3000,
@@ -149,7 +149,7 @@ test('API', (t: any) => {
       t.end()
     })
 
-    t.test('optimistic strategy', (t: any) => {
+    t.test('optimistic strategy', t => {
       const pool = new ConnectionPool({
         resurrectStrategy: 'optimistic',
         Connection,
@@ -174,7 +174,7 @@ test('API', (t: any) => {
       })
     })
 
-    t.test('none strategy', (t: any) => {
+    t.test('none strategy', t => {
       const pool = new ConnectionPool({
         resurrectStrategy: 'none',
         Connection,
@@ -203,8 +203,8 @@ test('API', (t: any) => {
     t.end()
   })
 
-  t.test('getConnection', (t: any) => {
-    t.test('Should return a connection', (t: any) => {
+  t.test('getConnection', t => {
+    t.test('Should return a connection', t => {
       const pool = new ConnectionPool({ Connection })
       const href = 'http://localhost:9200/'
       pool.addConnection(href)
@@ -212,7 +212,7 @@ test('API', (t: any) => {
       t.end()
     })
 
-    t.test('filter option', (t: any) => {
+    t.test('filter option', t => {
       const pool = new ConnectionPool({ Connection })
       const href1 = 'http://localhost:9200/'
       const href2 = 'http://localhost:9200/other'
@@ -223,7 +223,7 @@ test('API', (t: any) => {
       t.end()
     })
 
-    t.test('filter should get Connection objects', (t: any) => {
+    t.test('filter should get Connection objects', t => {
       t.plan(2)
       const pool = new ConnectionPool({ Connection })
       const href1 = 'http://localhost:9200/'
@@ -237,7 +237,7 @@ test('API', (t: any) => {
       pool.getConnection({ filter })
     })
 
-    t.test('filter should get alive connections', (t: any) => {
+    t.test('filter should get alive connections', t => {
       t.plan(2)
       const pool = new ConnectionPool({ Connection })
       const href1 = 'http://localhost:9200/'
@@ -256,7 +256,7 @@ test('API', (t: any) => {
     t.end()
   })
 
-  t.test('removeConnection', (t: any) => {
+  t.test('removeConnection', t => {
     const pool = new ConnectionPool({ Connection })
     const href = 'http://localhost:9200/'
     var connection = pool.addConnection(href)
@@ -266,7 +266,7 @@ test('API', (t: any) => {
     t.end()
   })
 
-  t.test('empty', (t: any) => {
+  t.test('empty', t => {
     const pool = new ConnectionPool({ Connection })
     pool.addConnection('http://localhost:9200/')
     pool.addConnection('http://localhost:9201/')
@@ -277,7 +277,7 @@ test('API', (t: any) => {
     })
   })
 
-  t.test('urlToHost', (t: any) => {
+  t.test('urlToHost', t => {
     const pool = new ConnectionPool({ Connection })
     const url = 'http://localhost:9200'
     t.deepEqual(
@@ -287,8 +287,8 @@ test('API', (t: any) => {
     t.end()
   })
 
-  t.test('nodesToHost', (t: any) => {
-    t.test('publish_address as ip address (IPv4)', (t: any) => {
+  t.test('nodesToHost', t => {
+    t.test('publish_address as ip address (IPv4)', t => {
       const pool = new ConnectionPool({ Connection })
       const nodes = {
         a1: {
@@ -330,7 +330,7 @@ test('API', (t: any) => {
       t.end()
     })
 
-    t.test('publish_address as ip address (IPv6)', (t: any) => {
+    t.test('publish_address as ip address (IPv6)', t => {
       const pool = new ConnectionPool({ Connection })
       const nodes = {
         a1: {
@@ -372,7 +372,7 @@ test('API', (t: any) => {
       t.end()
     })
 
-    t.test('publish_address as host/ip (IPv4)', (t: any) => {
+    t.test('publish_address as host/ip (IPv4)', t => {
       const pool = new ConnectionPool({ Connection })
       const nodes = {
         a1: {
@@ -414,7 +414,7 @@ test('API', (t: any) => {
       t.end()
     })
 
-    t.test('publish_address as host/ip (IPv6)', (t: any) => {
+    t.test('publish_address as host/ip (IPv6)', t => {
       const pool = new ConnectionPool({ Connection })
       const nodes = {
         a1: {
@@ -456,7 +456,7 @@ test('API', (t: any) => {
       t.end()
     })
 
-    t.test('Should use the configure protocol', (t: any) => {
+    t.test('Should use the configure protocol', t => {
       const pool = new ConnectionPool({ Connection })
       const nodes = {
         a1: {
@@ -478,7 +478,7 @@ test('API', (t: any) => {
       t.end()
     })
 
-    t.test('Should map roles', (t: any) => {
+    t.test('Should map roles', t => {
       const pool = new ConnectionPool({ Connection })
       const nodes = {
         a1: {
@@ -520,8 +520,8 @@ test('API', (t: any) => {
     t.end()
   })
 
-  t.test('update', (t: any) => {
-    t.test('Should not update existing connections', (t: any) => {
+  t.test('update', t => {
+    t.test('Should not update existing connections', t => {
       t.plan(2)
       const pool = new ConnectionPool({ Connection })
       pool.addConnection([{
@@ -556,7 +556,7 @@ test('API', (t: any) => {
       t.ok(pool.connections.find(c => c.id === 'a2').roles !== null)
     })
 
-    t.test('Should not update existing connections (mark alive)', (t: any) => {
+    t.test('Should not update existing connections (mark alive)', t => {
       t.plan(5)
       class CustomConnectionPool extends ConnectionPool {
         markAlive (connection) {
@@ -602,7 +602,7 @@ test('API', (t: any) => {
       t.ok(pool.connections.find(c => c.id === 'a2').roles !== null)
     })
 
-    t.test('Should not update existing connections (same url, different id)', (t: any) => {
+    t.test('Should not update existing connections (same url, different id)', t => {
       t.plan(3)
       class CustomConnectionPool extends ConnectionPool {
         markAlive (connection) {
@@ -638,7 +638,7 @@ test('API', (t: any) => {
       t.strictEqual(pool.connections.find(c => c.id === 'http://127.0.0.1:9200/'), undefined)
     })
 
-    t.test('Add a new connection', (t: any) => {
+    t.test('Add a new connection', t => {
       t.plan(2)
       const pool = new ConnectionPool({ Connection })
       pool.addConnection({
@@ -665,7 +665,7 @@ test('API', (t: any) => {
       t.ok(pool.connections.find(c => c.id === 'a2'))
     })
 
-    t.test('Remove old connections', (t: any) => {
+    t.test('Remove old connections', t => {
       t.plan(3)
       const pool = new ConnectionPool({ Connection })
       pool.addConnection({
@@ -689,7 +689,7 @@ test('API', (t: any) => {
       t.true(pool.connections.find(c => c.id === 'a3'))
     })
 
-    t.test('Remove old connections (markDead)', (t: any) => {
+    t.test('Remove old connections (markDead)', t => {
       t.plan(5)
       const pool = new ConnectionPool({ Connection, sniffEnabled: true })
       const conn = pool.addConnection({
@@ -723,15 +723,15 @@ test('API', (t: any) => {
   t.end()
 })
 
-test('Node selector', (t: any) => {
-  t.test('round-robin', (t: any) => {
+test('Node selector', t => {
+  t.test('round-robin', t => {
     t.plan(1)
     const pool = new ConnectionPool({ Connection })
     pool.addConnection('http://localhost:9200/')
     t.true(pool.getConnection({ selector: roundRobinSelector() }) instanceof Connection)
   })
 
-  t.test('random', (t: any) => {
+  t.test('random', t => {
     t.plan(1)
     const pool = new ConnectionPool({ Connection })
     pool.addConnection('http://localhost:9200/')
@@ -741,15 +741,15 @@ test('Node selector', (t: any) => {
   t.end()
 })
 
-test('Node filter', (t: any) => {
-  t.test('default', (t: any) => {
+test('Node filter', t => {
+  t.test('default', t => {
     t.plan(1)
     const pool = new ConnectionPool({ Connection })
     pool.addConnection({ url: new URL('http://localhost:9200/') })
     t.true(pool.getConnection({ filter: defaultNodeFilter }) instanceof Connection)
   })
 
-  t.test('Should filter master only nodes', (t: any) => {
+  t.test('Should filter master only nodes', t => {
     t.plan(1)
     const pool = new ConnectionPool({ Connection })
     pool.addConnection({
@@ -767,8 +767,8 @@ test('Node filter', (t: any) => {
   t.end()
 })
 
-test('Single node behavior', (t: any) => {
-  t.test('sniffing disabled (markDead and markAlive should be noop)', (t: any) => {
+test('Single node behavior', t => {
+  t.test('sniffing disabled (markDead and markAlive should be noop)', t => {
     t.plan(4)
     const pool = new ConnectionPool({ Connection, sniffEnabled: false })
     const conn = pool.addConnection('http://localhost:9200/')
@@ -778,7 +778,7 @@ test('Single node behavior', (t: any) => {
     t.strictEqual(pool.dead.length, 0)
   })
 
-  t.test('sniffing enabled (markDead and markAlive should work)', (t: any) => {
+  t.test('sniffing enabled (markDead and markAlive should work)', t => {
     t.plan(4)
     const pool = new ConnectionPool({ Connection, sniffEnabled: true })
     const conn = pool.addConnection('http://localhost:9200/')

@@ -11,7 +11,7 @@ import { connection } from '../utils'
 const { MockConnection, MockConnectionTimeout } = connection
 const { TimeoutError } = errors
 
-test('Should emit a request event when a request is performed', (t: any) => {
+test('Should emit a request event when a request is performed', t => {
   t.plan(3)
 
   const client = new Client({
@@ -59,7 +59,7 @@ test('Should emit a request event when a request is performed', (t: any) => {
   })
 })
 
-test('Should emit a response event in case of a successful response', (t: any) => {
+test('Should emit a response event in case of a successful response', t => {
   t.plan(3)
 
   const client = new Client({
@@ -110,7 +110,7 @@ test('Should emit a response event in case of a successful response', (t: any) =
   })
 })
 
-test('Should emit a response event with the error set', (t: any) => {
+test('Should emit a response event with the error set', t => {
   t.plan(3)
 
   const client = new Client({

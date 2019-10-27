@@ -8,7 +8,7 @@ import { test } from 'tap'
 import { internals } from '../../src/Transport'
 const { randomSelector, roundRobinSelector } = internals
 
-test('RoundRobinSelector', (t: any) => {
+test('RoundRobinSelector', t => {
   const selector = roundRobinSelector()
   const arr = [0, 1, 2, 3, 4, 5]
 
@@ -21,7 +21,7 @@ test('RoundRobinSelector', (t: any) => {
   }
 })
 
-test('RandomSelector', (t: any) => {
+test('RandomSelector', t => {
   t.plan(1)
   const arr = [0, 1, 2, 3, 4, 5]
   t.type(randomSelector(arr), 'number')

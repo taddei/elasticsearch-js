@@ -9,7 +9,7 @@ import { stringify } from 'querystring'
 import Serializer from '../../src/Serializer'
 import { SerializationError, DeserializationError } from '../../src/errors'
 
-test('Basic', (t: any) => {
+test('Basic', t => {
   t.plan(2)
   const s = new Serializer()
   const obj = { hello: 'world' }
@@ -18,7 +18,7 @@ test('Basic', (t: any) => {
   t.deepEqual(s.deserialize(json), obj)
 })
 
-test('ndserialize', (t: any) => {
+test('ndserialize', t => {
   t.plan(1)
   const s = new Serializer()
   const obj = [
@@ -34,7 +34,7 @@ test('ndserialize', (t: any) => {
   )
 })
 
-test('ndserialize (strings)', (t: any) => {
+test('ndserialize (strings)', t => {
   t.plan(1)
   const s = new Serializer()
   const obj = [
@@ -50,7 +50,7 @@ test('ndserialize (strings)', (t: any) => {
   )
 })
 
-test('qserialize', (t: any) => {
+test('qserialize', t => {
   t.plan(1)
   const s = new Serializer()
   const obj = {
@@ -64,7 +64,7 @@ test('qserialize', (t: any) => {
   )
 })
 
-test('qserialize (array)', (t: any) => {
+test('qserialize (array)', t => {
   t.plan(1)
   const s = new Serializer()
   const obj = {
@@ -78,7 +78,7 @@ test('qserialize (array)', (t: any) => {
   )
 })
 
-test('qserialize (string)', (t: any) => {
+test('qserialize (string)', t => {
   t.plan(1)
   const s = new Serializer()
   const obj = {
@@ -92,7 +92,7 @@ test('qserialize (string)', (t: any) => {
   )
 })
 
-test('qserialize (key with undefined value)', (t: any) => {
+test('qserialize (key with undefined value)', t => {
   t.plan(1)
   const s = new Serializer()
   const obj = {
@@ -107,7 +107,7 @@ test('qserialize (key with undefined value)', (t: any) => {
   )
 })
 
-test('SerializationError', (t: any) => {
+test('SerializationError', t => {
   t.plan(1)
   const s = new Serializer()
   const obj = { hello: 'world' }
@@ -121,7 +121,7 @@ test('SerializationError', (t: any) => {
   }
 })
 
-test('SerializationError ndserialize', (t: any) => {
+test('SerializationError ndserialize', t => {
   t.plan(1)
   const s = new Serializer()
   try {
@@ -132,7 +132,7 @@ test('SerializationError ndserialize', (t: any) => {
   }
 })
 
-test('DeserializationError', (t: any) => {
+test('DeserializationError', t => {
   t.plan(1)
   const s = new Serializer()
   const json = '{"hello'

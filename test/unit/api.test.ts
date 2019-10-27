@@ -8,7 +8,7 @@ import { test } from 'tap'
 import { Client, errors } from '../../src'
 import { buildServer } from '../utils'
 
-test('Basic (callback)', (t: any) => {
+test('Basic (callback)', t => {
   t.plan(2)
 
   function handler (req, res) {
@@ -32,7 +32,7 @@ test('Basic (callback)', (t: any) => {
   })
 })
 
-test('Basic (promises)', (t: any) => {
+test('Basic (promises)', t => {
   t.plan(1)
 
   function handler (req, res) {
@@ -58,7 +58,7 @@ test('Basic (promises)', (t: any) => {
   })
 })
 
-test('Error (callback)', (t: any) => {
+test('Error (callback)', t => {
   t.plan(1)
 
   function handler (req, res) {
@@ -82,7 +82,7 @@ test('Error (callback)', (t: any) => {
   })
 })
 
-test('Error (promises)', (t: any) => {
+test('Error (promises)', t => {
   t.plan(1)
 
   function handler (req, res) {
@@ -101,6 +101,7 @@ test('Error (promises)', (t: any) => {
         index: 'test',
         q: 'foo:bar'
       })
+      // @ts-ignore
       .then(t.fail)
       .catch(err => {
         t.ok(err)
@@ -109,7 +110,7 @@ test('Error (promises)', (t: any) => {
   })
 })
 
-test('Abort method (callback)', (t: any) => {
+test('Abort method (callback)', t => {
   t.plan(3)
 
   function handler (req, res) {
@@ -135,7 +136,7 @@ test('Abort method (callback)', (t: any) => {
   })
 })
 
-test('Abort is not supported in promises', (t: any) => {
+test('Abort is not supported in promises', t => {
   t.plan(2)
 
   function handler (req, res) {
@@ -165,7 +166,7 @@ test('Abort is not supported in promises', (t: any) => {
   })
 })
 
-test('Basic (options and callback)', (t: any) => {
+test('Basic (options and callback)', t => {
   t.plan(2)
 
   function handler (req, res) {
@@ -191,7 +192,7 @@ test('Basic (options and callback)', (t: any) => {
   })
 })
 
-test('Basic (options and promises)', (t: any) => {
+test('Basic (options and promises)', t => {
   t.plan(1)
 
   function handler (req, res) {
@@ -219,7 +220,7 @@ test('Basic (options and promises)', (t: any) => {
   })
 })
 
-test('Pass unknown parameters as query parameters (and get a warning)', (t: any) => {
+test('Pass unknown parameters as query parameters (and get a warning)', t => {
   t.plan(4)
 
   function handler (req, res) {
@@ -247,7 +248,7 @@ test('Pass unknown parameters as query parameters (and get a warning)', (t: any)
   })
 })
 
-test('If the API uses the same key for both url and query parameter, the url should win', (t: any) => {
+test('If the API uses the same key for both url and query parameter, the url should win', t => {
   t.plan(2)
 
   function handler (req, res) {
@@ -272,7 +273,7 @@ test('If the API uses the same key for both url and query parameter, the url sho
   })
 })
 
-test('ConfigurationError (callback)', (t: any) => {
+test('ConfigurationError (callback)', t => {
   t.plan(1)
 
   const client = new Client({
@@ -287,15 +288,15 @@ test('ConfigurationError (callback)', (t: any) => {
   })
 })
 
-test('ConfigurationError (promises)', (t: any) => {
+test('ConfigurationError (promises)', t => {
   t.plan(1)
 
   const client = new Client({
     node: 'http://localhost:9200'
   })
 
+  // @ts-ignore 
   client
-    // @ts-ignore
     .index({ body: { foo: 'bar' } })
     .then(t.fail)
     .catch(err => {

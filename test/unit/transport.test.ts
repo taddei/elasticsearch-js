@@ -27,7 +27,7 @@ import Transport from '../../src/Transport'
 
 const { MockConnection, MockConnectionTimeout, MockConnectionError } = connection
 
-test('Basic', (t: any) => {
+test('Basic', t => {
   t.plan(2)
   function handler (req, res) {
     res.setHeader('Content-Type', 'application/json;utf=8')
@@ -63,7 +63,7 @@ test('Basic', (t: any) => {
   })
 })
 
-test('Basic (promises support)', (t: any) => {
+test('Basic (promises support)', t => {
   t.plan(1)
 
   const pool = new ConnectionPool({ Connection: MockConnection })
@@ -94,7 +94,7 @@ test('Basic (promises support)', (t: any) => {
     .catch(t.fail)
 })
 
-test('Basic (options + promises support)', (t: any) => {
+test('Basic (options + promises support)', t => {
   t.plan(1)
 
   const pool = new ConnectionPool({ Connection: MockConnection })
@@ -127,7 +127,7 @@ test('Basic (options + promises support)', (t: any) => {
     .catch(t.fail)
 })
 
-test('Send POST', (t: any) => {
+test('Send POST', t => {
   t.plan(4)
   function handler (req, res) {
     t.match(req.headers, {
@@ -175,7 +175,7 @@ test('Send POST', (t: any) => {
   })
 })
 
-test('Send POST (ndjson)', (t: any) => {
+test('Send POST (ndjson)', t => {
   t.plan(4)
 
   const bulkBody = [
@@ -235,7 +235,7 @@ test('Send POST (ndjson)', (t: any) => {
   })
 })
 
-test('Send stream', (t: any) => {
+test('Send stream', t => {
   t.plan(4)
   function handler (req, res) {
     t.match(req.headers, {
@@ -282,7 +282,7 @@ test('Send stream', (t: any) => {
   })
 })
 
-test('Send stream (bulkBody)', (t: any) => {
+test('Send stream (bulkBody)', t => {
   t.plan(4)
   function handler (req, res) {
     t.match(req.headers, {
@@ -329,7 +329,7 @@ test('Send stream (bulkBody)', (t: any) => {
   })
 })
 
-test('Not JSON payload from server', (t: any) => {
+test('Not JSON payload from server', t => {
   t.plan(2)
   function handler (req, res) {
     res.setHeader('Content-Type', 'text/plain')
@@ -365,7 +365,7 @@ test('Not JSON payload from server', (t: any) => {
   })
 })
 
-test('NoLivingConnectionsError', (t: any) => {
+test('NoLivingConnectionsError', t => {
   t.plan(1)
   const pool = new ConnectionPool({ Connection })
 
@@ -391,7 +391,7 @@ test('NoLivingConnectionsError', (t: any) => {
   })
 })
 
-test('SerializationError', (t: any) => {
+test('SerializationError', t => {
   t.plan(1)
   const pool = new ConnectionPool({ Connection })
   pool.addConnection('http://localhost:9200')
@@ -422,7 +422,7 @@ test('SerializationError', (t: any) => {
   })
 })
 
-test('SerializationError (bulk)', (t: any) => {
+test('SerializationError (bulk)', t => {
   t.plan(1)
   const pool = new ConnectionPool({ Connection })
   pool.addConnection('http://localhost:9200')
@@ -453,7 +453,7 @@ test('SerializationError (bulk)', (t: any) => {
   })
 })
 
-test('DeserializationError', (t: any) => {
+test('DeserializationError', t => {
   t.plan(1)
   function handler (req, res) {
     res.setHeader('Content-Type', 'application/json;utf=8')
@@ -488,7 +488,7 @@ test('DeserializationError', (t: any) => {
   })
 })
 
-test('TimeoutError (should call markDead on the failing connection)', (t: any) => {
+test('TimeoutError (should call markDead on the failing connection)', t => {
   t.plan(2)
 
   class CustomConnectionPool extends ConnectionPool {
@@ -526,7 +526,7 @@ test('TimeoutError (should call markDead on the failing connection)', (t: any) =
   })
 })
 
-test('ConnectionError (should call markDead on the failing connection)', (t: any) => {
+test('ConnectionError (should call markDead on the failing connection)', t => {
   t.plan(2)
 
   class CustomConnectionPool extends ConnectionPool {
@@ -564,7 +564,7 @@ test('ConnectionError (should call markDead on the failing connection)', (t: any
   })
 })
 
-test('Retry mechanism', (t: any) => {
+test('Retry mechanism', t => {
   t.plan(2)
 
   var count = 0
@@ -618,7 +618,7 @@ test('Retry mechanism', (t: any) => {
   })
 })
 
-test('Custom retry mechanism', (t: any) => {
+test('Custom retry mechanism', t => {
   t.plan(2)
 
   var count = 0
@@ -674,7 +674,7 @@ test('Custom retry mechanism', (t: any) => {
   })
 })
 
-test('Should not retry on 429', (t: any) => {
+test('Should not retry on 429', t => {
   t.plan(3)
 
   var count = 0
@@ -723,7 +723,7 @@ test('Should not retry on 429', (t: any) => {
   })
 })
 
-test('Should call markAlive with a successful response', (t: any) => {
+test('Should call markAlive with a successful response', t => {
   t.plan(3)
 
   class CustomConnectionPool extends ConnectionPool {
@@ -762,7 +762,7 @@ test('Should call markAlive with a successful response', (t: any) => {
   })
 })
 
-test('Should call resurrect on every request', (t: any) => {
+test('Should call resurrect on every request', t => {
   t.plan(5)
 
   class CustomConnectionPool extends ConnectionPool {
@@ -802,7 +802,7 @@ test('Should call resurrect on every request', (t: any) => {
   })
 })
 
-test('Should return a request aborter utility', (t: any) => {
+test('Should return a request aborter utility', t => {
   t.plan(1)
 
   const pool = new ConnectionPool({ Connection: MockConnection })
@@ -836,7 +836,7 @@ test('Should return a request aborter utility', (t: any) => {
   t.pass('ok')
 })
 
-test('Retry mechanism and abort', (t: any) => {
+test('Retry mechanism and abort', t => {
   t.plan(1)
 
   function handler (req, res) {
@@ -861,7 +861,7 @@ test('Retry mechanism and abort', (t: any) => {
 
     var count = 0
     const transport = new Transport({
-      emit: even(t: any) => {
+      emit: event => {
         if (event === 'request' && count++ > 0) {
           request.abort()
           server.stop()
@@ -890,7 +890,7 @@ test('Retry mechanism and abort', (t: any) => {
   })
 })
 
-test('ResponseError', (t: any) => {
+test('ResponseError', t => {
   t.plan(3)
 
   function handler (req, res) {
@@ -929,7 +929,7 @@ test('ResponseError', (t: any) => {
   })
 })
 
-test('Override requestTimeout', (t: any) => {
+test('Override requestTimeout', t => {
   t.plan(2)
   function handler (req, res) {
     setTimeout(() => {
@@ -969,8 +969,8 @@ test('Override requestTimeout', (t: any) => {
   })
 })
 
-test('sniff', (t: any) => {
-  t.test('sniffOnStart', (t: any) => {
+test('sniff', t => {
+  t.test('sniffOnStart', t => {
     t.plan(1)
 
     class MyTransport extends Transport {
@@ -998,7 +998,7 @@ test('sniff', (t: any) => {
     })
   })
 
-  t.test('sniffOnConnectionFault', (t: any) => {
+  t.test('sniffOnConnectionFault', t => {
     t.plan(2)
 
     class MyTransport extends Transport {
@@ -1032,7 +1032,7 @@ test('sniff', (t: any) => {
     })
   })
 
-  t.test('sniffInterval', (t: any) => {
+  t.test('sniffInterval', t => {
     t.plan(6)
 
     const clock = lolex.install({ toFake: ['Date'] })
@@ -1063,16 +1063,19 @@ test('sniff', (t: any) => {
 
     const params = { method: 'GET', path: '/' }
     clock.tick(100)
+    // @ts-ignore 
     transport.request(params, t.error)
 
     clock.tick(200)
+    // @ts-ignore 
     transport.request(params, t.error)
 
     clock.tick(300)
+    // @ts-ignore 
     transport.request(params, t.error)
   })
 
-  t.test('errored', (t: any) => {
+  t.test('errored', t => {
     t.plan(1)
 
     class CustomConnectionPool extends ConnectionPool {
@@ -1108,11 +1111,11 @@ test('sniff', (t: any) => {
 })
 
 test(`Should mark as dead connections where the statusCode is 502/3/4
-      and return a ResponseError if there are no more attempts`, (t: any) => {
+      and return a ResponseError if there are no more attempts`, t => {
   ;[502, 503, 504].forEach(runTest)
 
   function runTest (statusCode) {
-    t.test(statusCode, (t: any) => {
+    t.test(statusCode, t => {
       t.plan(3)
 
       class CustomConnectionPool extends ConnectionPool {
@@ -1156,11 +1159,11 @@ test(`Should mark as dead connections where the statusCode is 502/3/4
   t.end()
 })
 
-test('Should retry the request if the statusCode is 502/3/4', (t: any) => {
+test('Should retry the request if the statusCode is 502/3/4', t => {
   ;[502, 503, 504].forEach(runTest)
 
   function runTest (statusCode) {
-    t.test(statusCode, (t: any) => {
+    t.test(statusCode, t => {
       t.plan(3)
 
       var first = true
@@ -1213,7 +1216,7 @@ test('Should retry the request if the statusCode is 502/3/4', (t: any) => {
   t.end()
 })
 
-test('Ignore status code', (t: any) => {
+test('Ignore status code', t => {
   t.plan(4)
 
   const pool = new ConnectionPool({ Connection: MockConnection })
@@ -1260,7 +1263,7 @@ test('Ignore status code', (t: any) => {
   })
 })
 
-test('Should serialize the querystring', (t: any) => {
+test('Should serialize the querystring', t => {
   t.plan(2)
 
   function handler (req, res) {
@@ -1300,7 +1303,7 @@ test('Should serialize the querystring', (t: any) => {
   })
 })
 
-test('timeout option', (t: any) => {
+test('timeout option', t => {
   function handler (req, res) {
     setTimeout(() => {
       res.setHeader('Content-Type', 'application/json;utf=8')
@@ -1308,8 +1311,8 @@ test('timeout option', (t: any) => {
     }, 1000)
   }
 
-  t.test('as number', (t: any) => {
-    t.test('global', (t: any) => {
+  t.test('as number', t => {
+    t.test('global', t => {
       t.plan(1)
 
       buildServer(handler, ({ port }, server) => {
@@ -1343,7 +1346,7 @@ test('timeout option', (t: any) => {
       })
     })
 
-    t.test('custom', (t: any) => {
+    t.test('custom', t => {
       t.plan(1)
 
       buildServer(handler, ({ port }, server) => {
@@ -1382,8 +1385,8 @@ test('timeout option', (t: any) => {
     t.end()
   })
 
-  t.test('as string', (t: any) => {
-    t.test('global', (t: any) => {
+  t.test('as string', t => {
+    t.test('global', t => {
       t.plan(1)
 
       buildServer(handler, ({ port }, server) => {
@@ -1417,7 +1420,7 @@ test('timeout option', (t: any) => {
       })
     })
 
-    t.test('custom', (t: any) => {
+    t.test('custom', t => {
       t.plan(1)
 
       buildServer(handler, ({ port }, server) => {
@@ -1459,8 +1462,8 @@ test('timeout option', (t: any) => {
   t.end()
 })
 
-test('Should cast to boolean HEAD request', (t: any) => {
-  t.test('2xx response', (t: any) => {
+test('Should cast to boolean HEAD request', t => {
+  t.test('2xx response', t => {
     t.plan(3)
     const pool = new ConnectionPool({ Connection: MockConnection })
     pool.addConnection('http://localhost:9200')
@@ -1489,7 +1492,7 @@ test('Should cast to boolean HEAD request', (t: any) => {
     })
   })
 
-  t.test('404 response', (t: any) => {
+  t.test('404 response', t => {
     t.plan(3)
     const pool = new ConnectionPool({ Connection: MockConnection })
     pool.addConnection('http://localhost:9200')
@@ -1518,7 +1521,7 @@ test('Should cast to boolean HEAD request', (t: any) => {
     })
   })
 
-  t.test('4xx response', (t: any) => {
+  t.test('4xx response', t => {
     t.plan(2)
 
     const pool = new ConnectionPool({ Connection: MockConnection })
@@ -1547,7 +1550,7 @@ test('Should cast to boolean HEAD request', (t: any) => {
     })
   })
 
-  t.test('5xx response', (t: any) => {
+  t.test('5xx response', t => {
     t.plan(2)
     const pool = new ConnectionPool({ Connection: MockConnection })
     pool.addConnection('http://localhost:9200')
@@ -1578,7 +1581,7 @@ test('Should cast to boolean HEAD request', (t: any) => {
   t.end()
 })
 
-test('Suggest compression', (t: any) => {
+test('Suggest compression', t => {
   t.plan(2)
   function handler (req, res) {
     t.match(req.headers, {
@@ -1616,8 +1619,8 @@ test('Suggest compression', (t: any) => {
   })
 })
 
-test('Warning header', (t: any) => {
-  t.test('Single warning', (t: any) => {
+test('Warning header', t => {
+  t.test('Single warning', t => {
     t.plan(3)
 
     const warn = '112 - "cache down" "Wed, 21 Oct 2015 07:28:00 GMT"'
@@ -1657,7 +1660,7 @@ test('Warning header', (t: any) => {
     })
   })
 
-  t.test('Multiple warnings', (t: any) => {
+  t.test('Multiple warnings', t => {
     t.plan(4)
 
     const warn1 = '112 - "cache down" "Wed, 21 Oct 2015 07:28:00 GMT"'
@@ -1698,7 +1701,7 @@ test('Warning header', (t: any) => {
     })
   })
 
-  t.test('No warnings', (t: any) => {
+  t.test('No warnings', t => {
     t.plan(2)
 
     function handler (req, res) {
@@ -1735,7 +1738,7 @@ test('Warning header', (t: any) => {
     })
   })
 
-  t.test('Multiple warnings and external warning', (t: any) => {
+  t.test('Multiple warnings and external warning', t => {
     t.plan(5)
 
     const warn1 = '112 - "cache down" "Wed, 21 Oct 2015 07:28:00 GMT"'
@@ -1781,7 +1784,7 @@ test('Warning header', (t: any) => {
   t.end()
 })
 
-test('asStream set to true', (t: any) => {
+test('asStream set to true', t => {
   t.plan(3)
   function handler (req, res) {
     res.setHeader('Content-Type', 'application/json;utf=8')
@@ -1830,8 +1833,8 @@ test('asStream set to true', (t: any) => {
   })
 })
 
-test('Compress request', (t: any) => {
-  t.test('gzip as request option', (t: any) => {
+test('Compress request', t => {
+  t.test('gzip as request option', t => {
     t.plan(4)
     function handler (req, res) {
       t.match(req.headers, {
@@ -1882,7 +1885,7 @@ test('Compress request', (t: any) => {
     })
   })
 
-  t.test('gzip as transport option', (t: any) => {
+  t.test('gzip as transport option', t => {
     t.plan(4)
     function handler (req, res) {
       t.match(req.headers, {
@@ -1932,7 +1935,7 @@ test('Compress request', (t: any) => {
     })
   })
 
-  t.test('gzip stream body', (t: any) => {
+  t.test('gzip stream body', t => {
     t.plan(4)
     function handler (req, res) {
       t.match(req.headers, {
@@ -1983,7 +1986,7 @@ test('Compress request', (t: any) => {
     })
   })
 
-  t.test('Should throw on invalid compression value', (t: any) => {
+  t.test('Should throw on invalid compression value', t => {
     t.plan(2)
 
     try {
@@ -2008,8 +2011,8 @@ test('Compress request', (t: any) => {
   t.end()
 })
 
-test('Headers configuration', (t: any) => {
-  t.test('Global option', (t: any) => {
+test('Headers configuration', t => {
+  t.test('Global option', t => {
     t.plan(3)
     function handler (req, res) {
       t.match(req.headers, { 'x-foo': 'bar' })
@@ -2049,7 +2052,7 @@ test('Headers configuration', (t: any) => {
     })
   })
 
-  t.test('Global option and custom option', (t: any) => {
+  t.test('Global option and custom option', t => {
     t.plan(3)
     function handler (req, res) {
       t.match(req.headers, {
@@ -2094,7 +2097,7 @@ test('Headers configuration', (t: any) => {
     })
   })
 
-  t.test('Custom options should override global option', (t: any) => {
+  t.test('Custom options should override global option', t => {
     t.plan(3)
     function handler (req, res) {
       t.match(req.headers, { 'x-foo': 'faz' })
@@ -2139,7 +2142,7 @@ test('Headers configuration', (t: any) => {
   t.end()
 })
 
-test('nodeFilter and nodeSelector', (t: any) => {
+test('nodeFilter and nodeSelector', t => {
   t.plan(4)
 
   const pool = new ConnectionPool({ Connection: MockConnection })
@@ -2176,8 +2179,8 @@ test('nodeFilter and nodeSelector', (t: any) => {
   })
 })
 
-test('Should accept custom querystring in the optons object', (t: any) => {
-  t.test('Options object', (t: any) => {
+test('Should accept custom querystring in the optons object', t => {
+  t.test('Options object', t => {
     t.plan(3)
 
     function handler (req, res) {
@@ -2217,7 +2220,7 @@ test('Should accept custom querystring in the optons object', (t: any) => {
     })
   })
 
-  t.test('Options object and params', (t: any) => {
+  t.test('Options object and params', t => {
     t.plan(3)
 
     function handler (req, res) {
@@ -2261,7 +2264,7 @@ test('Should accept custom querystring in the optons object', (t: any) => {
   t.end()
 })
 
-test('Should add an User-Agent header', (t: any) => {
+test('Should add an User-Agent header', t => {
   t.plan(2)
   const clientVersion = require('../../package.json').version
   const userAgent = `elasticsearch-js/${clientVersion} (${os.platform()} ${os.release()}-${os.arch()}; Node.js ${process.version})`
@@ -2302,7 +2305,7 @@ test('Should add an User-Agent header', (t: any) => {
   })
 })
 
-test('Should pass request params and options to generateRequestId', (t: any) => {
+test('Should pass request params and options to generateRequestId', t => {
   t.plan(3)
 
   const pool = new ConnectionPool({ Connection: MockConnection })
@@ -2329,6 +2332,6 @@ test('Should pass request params and options to generateRequestId', (t: any) => 
     sniffOnConnectionFault: false,
     sniffEndpoint: '_nodes/_all/http'
   })
-
+  // @ts-ignore 
   transport.request(params, options, t.error)
 })

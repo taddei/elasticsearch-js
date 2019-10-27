@@ -9,13 +9,13 @@
 import { test } from 'tap'
 import { errors } from '../../src'
 
-test('ElasticsearchClientError', (t: any) => {
+test('ElasticsearchClientError', t => {
   const err = new errors.ElasticsearchClientError('')
   t.true(err instanceof Error)
   t.end()
 })
 
-test('TimeoutError', (t: any) => {
+test('TimeoutError', t => {
   const err = new errors.TimeoutError('', {})
   t.true(err instanceof Error)
   t.true(err instanceof errors.ElasticsearchClientError)
@@ -23,7 +23,7 @@ test('TimeoutError', (t: any) => {
   t.end()
 })
 
-test('ConnectionError', (t: any) => {
+test('ConnectionError', t => {
   const err = new errors.ConnectionError('', {})
   t.true(err instanceof Error)
   t.true(err instanceof errors.ElasticsearchClientError)
@@ -31,7 +31,7 @@ test('ConnectionError', (t: any) => {
   t.end()
 })
 
-test('NoLivingConnectionsError', (t: any) => {
+test('NoLivingConnectionsError', t => {
   const err = new errors.NoLivingConnectionsError('', {})
   t.true(err instanceof Error)
   t.true(err instanceof errors.ElasticsearchClientError)
@@ -39,7 +39,7 @@ test('NoLivingConnectionsError', (t: any) => {
   t.end()
 })
 
-test('SerializationError', (t: any) => {
+test('SerializationError', t => {
   const err = new errors.SerializationError('')
   t.true(err instanceof Error)
   t.true(err instanceof errors.ElasticsearchClientError)
@@ -47,7 +47,7 @@ test('SerializationError', (t: any) => {
   t.end()
 })
 
-test('DeserializationError', (t: any) => {
+test('DeserializationError', t => {
   const err = new errors.DeserializationError('')
   t.true(err instanceof Error)
   t.true(err instanceof errors.ElasticsearchClientError)
@@ -55,7 +55,7 @@ test('DeserializationError', (t: any) => {
   t.end()
 })
 
-test('ConfigurationError', (t: any) => {
+test('ConfigurationError', t => {
   const err = new errors.ConfigurationError('')
   t.true(err instanceof Error)
   t.true(err instanceof errors.ElasticsearchClientError)
@@ -63,7 +63,7 @@ test('ConfigurationError', (t: any) => {
   t.end()
 })
 
-test('ResponseError', (t: any) => {
+test('ResponseError', t => {
   const meta = {
     body: 1,
     statusCode: 1,

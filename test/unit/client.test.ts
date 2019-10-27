@@ -13,8 +13,8 @@ import { buildServer } from '../utils'
 
 const { ElasticsearchClientError } = errors
 
-test('Configure host', (t: any) => {
-  t.test('Single string', (t: any) => {
+test('Configure host', t => {
+  t.test('Single string', t => {
     const client = new Client({
       node: 'http://localhost:9200'
     })
@@ -35,7 +35,7 @@ test('Configure host', (t: any) => {
     t.end()
   })
 
-  t.test('Array of strings', (t: any) => {
+  t.test('Array of strings', t => {
     const client = new Client({
       nodes: ['http://localhost:9200', 'http://localhost:9201']
     })
@@ -70,7 +70,7 @@ test('Configure host', (t: any) => {
     t.end()
   })
 
-  t.test('Single object', (t: any) => {
+  t.test('Single object', t => {
     const client = new Client({
       node: {
         url: new URL('http://localhost:9200'),
@@ -102,7 +102,7 @@ test('Configure host', (t: any) => {
     t.end()
   })
 
-  t.test('Array of objects', (t: any) => {
+  t.test('Array of objects', t => {
     const client = new Client({
       nodes: [{
         url: new URL('http://localhost:9200'),
@@ -158,7 +158,7 @@ test('Configure host', (t: any) => {
     t.end()
   })
 
-  t.test('Custom headers', (t: any) => {
+  t.test('Custom headers', t => {
     const client = new Client({
       node: {
         url: new URL('http://localhost:9200'),
@@ -174,7 +174,7 @@ test('Configure host', (t: any) => {
     t.end()
   })
 
-  t.test('Missing node conf', (t: any) => {
+  t.test('Missing node conf', t => {
     try {
       new Client() // eslint-disable-line
       t.fail('Should fail')
@@ -187,9 +187,9 @@ test('Configure host', (t: any) => {
   t.end()
 })
 
-test('Authentication', (t: any) => {
-  t.test('Basic', (t: any) => {
-    t.test('Node with basic auth data in the url', (t: any) => {
+test('Authentication', t => {
+  t.test('Basic', t => {
+    t.test('Node with basic auth data in the url', t => {
       t.plan(3)
 
       function handler (req, res) {
@@ -213,7 +213,7 @@ test('Authentication', (t: any) => {
       })
     })
 
-    t.test('Node with basic auth data in the url (array of nodes)', (t: any) => {
+    t.test('Node with basic auth data in the url (array of nodes)', t => {
       t.plan(3)
 
       function handler (req, res) {
@@ -237,7 +237,7 @@ test('Authentication', (t: any) => {
       })
     })
 
-    t.test('Node with basic auth data in the options', (t: any) => {
+    t.test('Node with basic auth data in the options', t => {
       t.plan(3)
 
       function handler (req, res) {
@@ -265,7 +265,7 @@ test('Authentication', (t: any) => {
       })
     })
 
-    t.test('Custom basic authentication per request', (t: any) => {
+    t.test('Custom basic authentication per request', t => {
       t.plan(6)
 
       var first = true
@@ -300,7 +300,7 @@ test('Authentication', (t: any) => {
       })
     })
 
-    t.test('Override default basic authentication per request', (t: any) => {
+    t.test('Override default basic authentication per request', t => {
       t.plan(6)
 
       var first = true
@@ -342,8 +342,8 @@ test('Authentication', (t: any) => {
     t.end()
   })
 
-  t.test('ApiKey', (t: any) => {
-    t.test('Node with ApiKey auth data in the options as string', (t: any) => {
+  t.test('ApiKey', t => {
+    t.test('Node with ApiKey auth data in the options as string', t => {
       t.plan(3)
 
       function handler (req, res) {
@@ -370,7 +370,7 @@ test('Authentication', (t: any) => {
       })
     })
 
-    t.test('Node with ApiKey auth data in the options as object', (t: any) => {
+    t.test('Node with ApiKey auth data in the options as object', t => {
       t.plan(3)
 
       function handler (req, res) {
@@ -397,7 +397,7 @@ test('Authentication', (t: any) => {
       })
     })
 
-    t.test('Custom ApiKey authentication per request', (t: any) => {
+    t.test('Custom ApiKey authentication per request', t => {
       t.plan(6)
 
       var first = true
@@ -432,7 +432,7 @@ test('Authentication', (t: any) => {
       })
     })
 
-    t.test('Override default ApiKey authentication per request', (t: any) => {
+    t.test('Override default ApiKey authentication per request', t => {
       t.plan(6)
 
       var first = true
@@ -476,7 +476,7 @@ test('Authentication', (t: any) => {
   t.end()
 })
 
-test('Custom headers per request', (t: any) => {
+test('Custom headers per request', t => {
   t.plan(3)
 
   function handler (req, res) {
@@ -506,7 +506,7 @@ test('Custom headers per request', (t: any) => {
   })
 })
 
-test('Client close', (t: any) => {
+test('Client close', t => {
   t.plan(2)
 
   class MyConnectionPool extends ConnectionPool {
@@ -524,7 +524,7 @@ test('Client close', (t: any) => {
   client.close(() => t.pass('Closed'))
 })
 
-test('Client close (promise)', (t: any) => {
+test('Client close (promise)', t => {
   t.plan(2)
 
   class MyConnectionPool extends ConnectionPool {
@@ -543,8 +543,8 @@ test('Client close (promise)', (t: any) => {
     .then(() => t.pass('Closed'))
 })
 
-test('Extend client APIs', (t: any) => {
-  t.test('Extend a single method', (t: any) => {
+test('Extend client APIs', t => {
+  t.test('Extend a single method', t => {
     t.plan(5)
 
     const client = new Client({ node: 'http://localhost:9200' })
@@ -571,7 +571,7 @@ test('Extend client APIs', (t: any) => {
     )
   })
 
-  t.test('Create a namespace and a method', (t: any) => {
+  t.test('Create a namespace and a method', t => {
     t.plan(5)
 
     const client = new Client({ node: 'http://localhost:9200' })
@@ -598,7 +598,7 @@ test('Extend client APIs', (t: any) => {
     )
   })
 
-  t.test('Create a namespace and multiple methods', (t: any) => {
+  t.test('Create a namespace and multiple methods', t => {
     t.plan(10)
 
     const client = new Client({ node: 'http://localhost:9200' })
@@ -647,7 +647,7 @@ test('Extend client APIs', (t: any) => {
     )
   })
 
-  t.test('Cannot override an existing method', (t: any) => {
+  t.test('Cannot override an existing method', t => {
     t.plan(1)
 
     const client = new Client({ node: 'http://localhost:9200' })
@@ -659,7 +659,7 @@ test('Extend client APIs', (t: any) => {
     }
   })
 
-  t.test('Cannot override an existing namespace and method', (t: any) => {
+  t.test('Cannot override an existing namespace and method', t => {
     t.plan(1)
 
     const client = new Client({ node: 'http://localhost:9200' })
@@ -671,7 +671,7 @@ test('Extend client APIs', (t: any) => {
     }
   })
 
-  t.test('Can override an existing method with { force: true }', (t: any) => {
+  t.test('Can override an existing method with { force: true }', t => {
     t.plan(1)
 
     const client = new Client({ node: 'http://localhost:9200' })
@@ -682,7 +682,7 @@ test('Extend client APIs', (t: any) => {
     }
   })
 
-  t.test('Can override an existing namespace and method with { force: true }', (t: any) => {
+  t.test('Can override an existing namespace and method with { force: true }', t => {
     t.plan(1)
 
     const client = new Client({ node: 'http://localhost:9200' })
@@ -693,7 +693,7 @@ test('Extend client APIs', (t: any) => {
     }
   })
 
-  t.test('Should call the transport.request method', (t: any) => {
+  t.test('Should call the transport.request method', t => {
     t.plan(2)
 
     class MyTransport extends Transport {
@@ -719,7 +719,7 @@ test('Extend client APIs', (t: any) => {
     )
   })
 
-  t.test('Should support callbacks', (t: any) => {
+  t.test('Should support callbacks', t => {
     t.plan(2)
 
     const client = new Client({ node: 'http://localhost:9200' })
@@ -739,7 +739,7 @@ test('Extend client APIs', (t: any) => {
     )
   })
 
-  t.test('Should support promises', (t: any) => {
+  t.test('Should support promises', t => {
     t.plan(1)
 
     const client = new Client({ node: 'http://localhost:9200' })
@@ -763,8 +763,8 @@ test('Extend client APIs', (t: any) => {
   t.end()
 })
 
-test('Elastic cloud config', (t: any) => {
-  t.test('Basic', (t: any) => {
+test('Elastic cloud config', t => {
+  t.test('Basic', t => {
     t.plan(5)
     const client = new Client({
       cloud: {
@@ -799,7 +799,7 @@ test('Elastic cloud config', (t: any) => {
     t.deepEqual(pool._ssl, { secureProtocol: 'TLSv1_2_method' })
   })
 
-  t.test('Auth as separate option', (t: any) => {
+  t.test('Auth as separate option', t => {
     t.plan(5)
     const client = new Client({
       cloud: {
@@ -836,7 +836,7 @@ test('Elastic cloud config', (t: any) => {
     t.deepEqual(pool._ssl, { secureProtocol: 'TLSv1_2_method' })
   })
 
-  t.test('Override default options', (t: any) => {
+  t.test('Override default options', t => {
     t.plan(4)
     const client = new Client({
       cloud: {

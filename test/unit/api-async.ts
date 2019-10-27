@@ -8,7 +8,7 @@ import { Client, errors } from '../../src'
 import { buildServer } from '../utils'
 
 function runAsyncTest (test) {
-  test('async await (search)', (t: any) => {
+  test('async await (search)', t => {
     t.plan(1)
 
     function handler (req, res) {
@@ -34,7 +34,7 @@ function runAsyncTest (test) {
     })
   })
 
-  test('async await (index)', (t: any) => {
+  test('async await (index)', t => {
     t.plan(1)
 
     function handler (req, res) {
@@ -60,7 +60,7 @@ function runAsyncTest (test) {
     })
   })
 
-  test('async await (ConfigurationError)', async (t: any) => {
+  test('async await (ConfigurationError)', async t => {
     t.plan(1)
 
     const client = new Client({
