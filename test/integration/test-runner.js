@@ -440,6 +440,9 @@ function build (opts = {}) {
       }
     } else {
       stats.assertions += 1
+      if (err) {
+        console.log(JSON.stringify(err.body, null, 2))
+      }
       assert.ifError(err, `should not error: ${cmd.method}`, action)
       response = body
     }

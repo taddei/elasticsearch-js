@@ -155,6 +155,7 @@ async function start ({ client, isXPack }) {
     const apiTime = now()
 
     for (const file of folder) {
+      if (!file.includes('/transforms_crud.yml')) continue
       const testRunner = build({
         client,
         version,
